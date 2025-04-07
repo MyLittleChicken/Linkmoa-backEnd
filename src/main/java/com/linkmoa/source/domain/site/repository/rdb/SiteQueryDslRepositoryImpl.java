@@ -1,4 +1,4 @@
-package com.linkmoa.source.domain.site.repository;
+package com.linkmoa.source.domain.site.repository.rdb;
 
 import static com.linkmoa.source.domain.favorite.entity.QFavorite.*;
 import static com.linkmoa.source.domain.site.entity.QSite.*;
@@ -6,6 +6,8 @@ import static com.linkmoa.source.domain.site.entity.QSite.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Repository;
 
 import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
@@ -17,11 +19,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SiteRepositoryImpl implements SiteRepositoryCustom {
-
+@Repository
+public class SiteQueryDslRepositoryImpl {
 	private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
 	public List<SiteDetailResponse> findSitesDetails(Long directoryId, List<Long> favoriteSiteIds) {
 
 		return jpaQueryFactory
@@ -40,7 +41,6 @@ public class SiteRepositoryImpl implements SiteRepositoryCustom {
 
 	}
 
-	@Override
 	public List<SiteSimpleResponse> findFavoriteSites(List<Long> favoriteSiteIds) {
 		if (favoriteSiteIds == null || favoriteSiteIds.isEmpty()) {
 			return Collections.emptyList();
@@ -62,5 +62,4 @@ public class SiteRepositoryImpl implements SiteRepositoryCustom {
 			.orderBy(favorite.createdAt.asc())
 			.fetch();
 	}
-
 }

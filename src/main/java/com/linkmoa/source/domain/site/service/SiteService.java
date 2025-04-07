@@ -15,7 +15,7 @@ import com.linkmoa.source.domain.site.dto.request.SiteUpdateRequestDto;
 import com.linkmoa.source.domain.site.entity.Site;
 import com.linkmoa.source.domain.site.error.SiteErrorCode;
 import com.linkmoa.source.domain.site.exception.SiteException;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ import lombok.AllArgsConstructor;
 @Transactional
 public class SiteService {
 
-	private final SiteRepository siteRepository;
+	private final SiteDataAccess siteDataAccess;
 	private final DirectoryDataAccess directoryDataAccess;
 
 	@ValidationApplied
@@ -44,7 +44,7 @@ public class SiteService {
 			.orderIndex(nextOrderIndex)
 			.build();
 
-		siteRepository.save(newSite);
+		siteDataAccess.save(newSite);
 		return newSite.getId();
 
 	}
@@ -53,7 +53,7 @@ public class SiteService {
 	public Long updateSite(SiteUpdateRequestDto request,
 		PrincipalDetails principalDetails) {
 
-		Site updateSite = siteRepository.findById(request.siteId())
+		Site updateSite = siteDataAccess.findById(request.siteId())
 			.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 
 		updateSite.updateSiteNameAndUrl(request.siteName(), request.siteUrl());
@@ -66,14 +66,14 @@ public class SiteService {
 	public Long deleteSite(SiteDeleteDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Site deleteSite = siteRepository.findById(request.siteId())
+		Site deleteSite = siteDataAccess.findById(request.siteId())
 			.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 
 		Directory parentDirectory = deleteSite.getDirectory();
 		Integer orderIndex = deleteSite.getOrderIndex();
 
 		directoryDataAccess.decrementDirectoryAndSiteOrderIndexes(parentDirectory, orderIndex);
-		siteRepository.delete(deleteSite);
+		siteDataAccess.delete(deleteSite);
 
 		return deleteSite.getId();
 	}
@@ -81,7 +81,7 @@ public class SiteService {
 	@ValidationApplied
 	public Long moveSite(SiteMoveRequestDto request, PrincipalDetails principalDetails) {
 
-		Site moveSite = siteRepository.findById(request.siteId())
+		Site moveSite = siteDataAccess.findById(request.siteId())
 			.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 
 		Directory targetDirectory = directoryDataAccess.findById(request.targetDirectoryId())

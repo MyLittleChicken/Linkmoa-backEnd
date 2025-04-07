@@ -11,7 +11,7 @@ import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class PageAsyncService {
 
 	private final DirectoryDataAccess directoryDataAccess;
-	private final SiteRepository siteRepository;
+	private final SiteDataAccess siteDataAccess;
 
 	@Async("threadPoolTaskExecutor")
 	public CompletableFuture<List<DirectoryDetailResponse>> findDirectoryDetailsAsync(Long directoryId,
@@ -32,7 +32,7 @@ public class PageAsyncService {
 	@Async("threadPoolTaskExecutor")
 	public CompletableFuture<List<SiteDetailResponse>> findSitesDetailsAsync(Long directoryId,
 		List<Long> favoriteSiteIds) {
-		return CompletableFuture.completedFuture(siteRepository.findSitesDetails(directoryId, favoriteSiteIds));
+		return CompletableFuture.completedFuture(siteDataAccess.findSitesDetails(directoryId, favoriteSiteIds));
 	}
 
 	public CompletableFuture<PageDetailsResponse> combinePageDetails(

@@ -18,7 +18,7 @@ import com.linkmoa.source.domain.favorite.exception.FavoriteException;
 import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.site.dto.response.SiteSimpleResponse;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +28,7 @@ public class FavoriteService {
 
 	private final FavoriteRepository favoriteRepository;
 	private final DirectoryDataAccess directoryDataAccess;
-	private final SiteRepository siteRepository;
+	private final SiteDataAccess siteDataAccess;
 
 	@Transactional
 	public FavoriteUpdateDto.SimpleResponse updateFavorite(FavoriteUpdateDto.Request request,
@@ -110,7 +110,7 @@ public class FavoriteService {
 
 		List<DirectorySimpleResponse> directoryDetailResponses = directoryDataAccess.findFavoriteDirectories(
 			favoriteDirectoryIds);
-		List<SiteSimpleResponse> sitesDetails = siteRepository.findFavoriteSites(favoriteSiteIds);
+		List<SiteSimpleResponse> sitesDetails = siteDataAccess.findFavoriteSites(favoriteSiteIds);
 
 		return FavoriteUpdateDto.DetailResponse.builder()
 			.email(principalDetails.getEmail())

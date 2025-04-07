@@ -25,7 +25,7 @@ import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.domain.site.entity.Site;
 import com.linkmoa.source.domain.site.error.SiteErrorCode;
 import com.linkmoa.source.domain.site.exception.SiteException;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DirectoryService {
 
 	private final DirectoryDataAccess directoryDataAccess;
-	private final SiteRepository siteRepository;
+	private final SiteDataAccess siteDataAccess;
 	private final FavoriteRepository favoriteRepository;
 	private final FavoriteService favoriteService;
 
@@ -172,7 +172,7 @@ public class DirectoryService {
 				return directory.getOrderIndex();
 			}
 			case SITE -> {
-				Site site = siteRepository.findById(targetId)
+				Site site = siteDataAccess.findById(targetId)
 					.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 				return site.getOrderIndex();
 			}
@@ -189,7 +189,7 @@ public class DirectoryService {
 				directory.setOrderIndex(targetOrderIndex);
 			}
 			case SITE -> {
-				Site site = siteRepository.findById(targetId)
+				Site site = siteDataAccess.findById(targetId)
 					.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 				site.setOrderIndex(targetOrderIndex);
 			}
@@ -214,7 +214,7 @@ public class DirectoryService {
 			directoryDataAccess.findDirectoryDetails(targetDirectory.getId(), favoriteDirectoryIds);
 
 		List<SiteDetailResponse> siteDetailResponses =
-			siteRepository.findSitesDetails(targetDirectory.getId(), favoriteSiteIds);
+			siteDataAccess.findSitesDetails(targetDirectory.getId(), favoriteSiteIds);
 
 		return DirectoryIdDto.Response.builder()
 			.targetDirectoryDescription(targetDirectory.getDirectoryDescription())
