@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.constant.FavoriteAction;
 import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.favorite.dto.request.FavoriteUpdateDto;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class FavoriteService {
 
 	private final FavoriteRepository favoriteRepository;
-	private final DirectoryRepository directoryRepository;
+	private final DirectoryDataAccess directoryDataAccess;
 	private final SiteRepository siteRepository;
 
 	@Transactional
@@ -108,7 +108,7 @@ public class FavoriteService {
 		List<Long> favoriteDirectoryIds = findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = findFavoriteSiteIds(favorites);
 
-		List<DirectorySimpleResponse> directoryDetailResponses = directoryRepository.findFavoriteDirectories(
+		List<DirectorySimpleResponse> directoryDetailResponses = directoryDataAccess.findFavoriteDirectories(
 			favoriteDirectoryIds);
 		List<SiteSimpleResponse> sitesDetails = siteRepository.findFavoriteSites(favoriteSiteIds);
 

@@ -1,4 +1,4 @@
-package com.linkmoa.source.domain.directory.repository;
+package com.linkmoa.source.domain.directory.repository.rdb;
 
 import static com.linkmoa.source.domain.directory.entity.QDirectory.*;
 import static com.linkmoa.source.domain.favorite.entity.QFavorite.*;
@@ -7,6 +7,8 @@ import static com.linkmoa.source.domain.site.entity.QSite.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Repository;
 
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
@@ -17,15 +19,12 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
-@Slf4j
-public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
-
+@Repository
+public class DirectoryQueryDslRepositoryImpl {
 	private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
 	public List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds) {
 
 		return jpaQueryFactory
@@ -44,7 +43,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 
 	}
 
-	@Override
 	public void decrementDirectoryOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		jpaQueryFactory.update(directory)
 			.set(directory.orderIndex, directory.orderIndex.subtract(1))
@@ -53,7 +51,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void decrementSiteOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		jpaQueryFactory.update(site)
 			.set(site.orderIndex, site.orderIndex.subtract(1))
@@ -62,13 +59,11 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void decrementDirectoryAndSiteOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		decrementDirectoryOrderIndexes(parentDirectory, orderIndex);
 		decrementSiteOrderIndexes(parentDirectory, orderIndex);
 	}
 
-	@Override
 	public void incrementDirectoryOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		jpaQueryFactory.update(directory)
 			.set(directory.orderIndex, directory.orderIndex.add(1))
@@ -77,7 +72,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void incrementSiteOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		jpaQueryFactory.update(site)
 			.set(site.orderIndex, site.orderIndex.add(1))
@@ -86,13 +80,11 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void incrementDirectoryAndSiteOrderIndexes(Directory parentDirectory, Integer orderIndex) {
 		incrementDirectoryOrderIndexes(parentDirectory, orderIndex);
 		incrementSiteOrderIndexes(parentDirectory, orderIndex);
 	}
 
-	@Override
 	public void updateDirectoryOrderIndexesInRange(Directory parentDirectory, Integer startIndex, Integer endIndex,
 		Integer adjustmentValue) {
 		jpaQueryFactory.update(directory)
@@ -102,7 +94,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void updateSiteOrderIndexesInRange(Directory parentDirectory, Integer startIndex, Integer endIndex,
 		Integer adjustmentValue) {
 		jpaQueryFactory.update(site)
@@ -112,7 +103,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 			.execute();
 	}
 
-	@Override
 	public void updateDirectoryAndSiteOrderIndexesInRange(Directory parentDirectory, Integer startIndex,
 		Integer endIndex, boolean isIncrement) {
 		Integer adjustmentValue = isIncrement ? 1 : -1;
@@ -121,7 +111,6 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 		updateSiteOrderIndexesInRange(parentDirectory, startIndex, endIndex, adjustmentValue);
 	}
 
-	@Override
 	public List<DirectorySimpleResponse> findFavoriteDirectories(List<Long> favoriteDirectoryIds) {
 		if (favoriteDirectoryIds == null || favoriteDirectoryIds.isEmpty()) {
 			return Collections.emptyList();

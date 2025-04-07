@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
@@ -19,14 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PageAsyncService {
 
-	private final DirectoryRepository directoryRepository;
+	private final DirectoryDataAccess directoryDataAccess;
 	private final SiteRepository siteRepository;
 
 	@Async("threadPoolTaskExecutor")
 	public CompletableFuture<List<DirectoryDetailResponse>> findDirectoryDetailsAsync(Long directoryId,
 		List<Long> favoriteDirectoryIds) {
 		return CompletableFuture.completedFuture(
-			directoryRepository.findDirectoryDetails(directoryId, favoriteDirectoryIds));
+			directoryDataAccess.findDirectoryDetails(directoryId, favoriteDirectoryIds));
 	}
 
 	@Async("threadPoolTaskExecutor")

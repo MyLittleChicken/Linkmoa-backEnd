@@ -9,7 +9,7 @@ import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.error.DirectoryErrorCode;
 import com.linkmoa.source.domain.directory.exception.DirectoryException;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
 import com.linkmoa.source.domain.dispatch.dto.request.DirectoryTransmissionDto;
 import com.linkmoa.source.domain.dispatch.dto.request.SharePageInvitationRequestDto;
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DispatchRequestService {
 
 	private final MemberService memberService;
-	private final DirectoryRepository directoryRepository;
+	private final DirectoryDataAccess directoryDataAccess;
 	private final DirectoryTransmissionRequestRepository directoryTransmissionRequestRepository;
 	private final PageRepository pageRepository;
 	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
@@ -77,7 +77,7 @@ public class DispatchRequestService {
 			throw new DispatchException(DispatchErrorCode.TRANSMIT_DIRECTORY_REQUEST_ACCEPTED_EXIST);
 		}
 
-		Directory directory = directoryRepository.findById(request.directoryId())
+		Directory directory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
 		DirectoryTransmissionRequest directoryTransmissionRequest = DirectoryTransmissionRequest.builder()

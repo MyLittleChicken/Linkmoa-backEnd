@@ -7,7 +7,7 @@ import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.error.DirectoryErrorCode;
 import com.linkmoa.source.domain.directory.exception.DirectoryException;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.site.dto.request.SiteCreateDto;
 import com.linkmoa.source.domain.site.dto.request.SiteDeleteDto;
 import com.linkmoa.source.domain.site.dto.request.SiteMoveRequestDto;
@@ -26,13 +26,13 @@ import lombok.AllArgsConstructor;
 public class SiteService {
 
 	private final SiteRepository siteRepository;
-	private final DirectoryRepository directoryRepository;
+	private final DirectoryDataAccess directoryDataAccess;
 
 	@ValidationApplied
 	public Long createSite(SiteCreateDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory directory = directoryRepository.findById(request.directoryId())
+		Directory directory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
 		Integer nextOrderIndex = directory.getNextOrderIndex();
@@ -72,7 +72,7 @@ public class SiteService {
 		Directory parentDirectory = deleteSite.getDirectory();
 		Integer orderIndex = deleteSite.getOrderIndex();
 
-		directoryRepository.decrementDirectoryAndSiteOrderIndexes(parentDirectory, orderIndex);
+		directoryDataAccess.decrementDirectoryAndSiteOrderIndexes(parentDirectory, orderIndex);
 		siteRepository.delete(deleteSite);
 
 		return deleteSite.getId();
@@ -84,10 +84,10 @@ public class SiteService {
 		Site moveSite = siteRepository.findById(request.siteId())
 			.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 
-		Directory targetDirectory = directoryRepository.findById(request.targetDirectoryId())
+		Directory targetDirectory = directoryDataAccess.findById(request.targetDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		directoryRepository.decrementDirectoryAndSiteOrderIndexes(moveSite.getDirectory(), moveSite.getOrderIndex());
+		directoryDataAccess.decrementDirectoryAndSiteOrderIndexes(moveSite.getDirectory(), moveSite.getOrderIndex());
 
 		Integer newOrderIndex = targetDirectory.getNextOrderIndex();
 

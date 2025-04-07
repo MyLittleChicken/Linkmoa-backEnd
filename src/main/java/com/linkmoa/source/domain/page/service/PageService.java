@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
 import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
@@ -42,7 +42,7 @@ public class PageService {
 
 	private final PageRepository pageRepository;
 	private final MemberService memberService;
-	private final DirectoryRepository directoryRepository;
+	private final DirectoryDataAccess directoryDataAccess;
 	private final MemberPageLinkRepository memberPageLinkRepository;
 	private final PageAsyncService pageAsyncService;
 	private final FavoriteRepository favoriteRepository;
@@ -142,7 +142,7 @@ public class PageService {
 	public void saveEntities(Page page, MemberPageLink memberPageLink, Directory rootDirectory) {
 		pageRepository.save(page);
 		memberPageLinkRepository.save(memberPageLink);
-		directoryRepository.save(rootDirectory);
+		directoryDataAccess.save(rootDirectory);
 	}
 
 	@Transactional
