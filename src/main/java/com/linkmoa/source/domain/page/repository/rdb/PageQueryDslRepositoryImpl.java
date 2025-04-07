@@ -1,25 +1,25 @@
-package com.linkmoa.source.domain.page.repository;
+package com.linkmoa.source.domain.page.repository.rdb;
 
 import static com.linkmoa.source.domain.memberPageLink.entity.QMemberPageLink.*;
 import static com.linkmoa.source.domain.page.entity.QPage.*;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class PageRepositoryImpl implements PageRepositoryCustom {
+@Repository
+public class PageQueryDslRepositoryImpl {
 
 	private final JPAQueryFactory jpaQueryFactory;
-	private final EntityManager entityManager;
 
-	@Override
 	public List<PageResponse> findAllPagesByMemberId(Long memberId) {
 
 		List<PageResponse> result = jpaQueryFactory.
@@ -47,5 +47,4 @@ public class PageRepositoryImpl implements PageRepositoryCustom {
 			.where(page.id.eq(pageId))
 			.fetchOne();
 	}
-
 }

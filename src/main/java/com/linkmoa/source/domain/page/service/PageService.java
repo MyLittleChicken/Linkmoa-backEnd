@@ -28,7 +28,7 @@ import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.page.error.PageErrorCode;
 import com.linkmoa.source.domain.page.exception.PageException;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 import com.linkmoa.source.global.dto.request.BaseRequest;
 
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PageService {
 
-	private final PageRepository pageRepository;
+	private final PageDataAccess pageDataAccess;
 	private final MemberService memberService;
 	private final DirectoryDataAccess directoryDataAccess;
 	private final MemberPageLinkRepository memberPageLinkRepository;
@@ -140,7 +140,7 @@ public class PageService {
 
 	@Transactional
 	public void saveEntities(Page page, MemberPageLink memberPageLink, Directory rootDirectory) {
-		pageRepository.save(page);
+		pageDataAccess.save(page);
 		memberPageLinkRepository.save(memberPageLink);
 		directoryDataAccess.save(rootDirectory);
 	}
@@ -151,14 +151,14 @@ public class PageService {
 		PrincipalDetails principalDetails) {
 
 		Long pageId = request.baseRequest().pageId();
-		pageRepository.findById(pageId)
+		pageDataAccess.findById(pageId)
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
-		pageRepository.deleteById(pageId);
+		pageDataAccess.deleteById(pageId);
 		return request.baseRequest().pageId();
 	}
 
 	public List<PageResponse> findAllPages(PrincipalDetails principalDetails) {
-		List<PageResponse> allPagesByMemberId = pageRepository.findAllPagesByMemberId(principalDetails.getId());
+		List<PageResponse> allPagesByMemberId = pageDataAccess.findAllPagesByMemberId(principalDetails.getId());
 
 		return allPagesByMemberId;
 
@@ -168,7 +168,7 @@ public class PageService {
 	public SharePageLeaveResponse leaveSharePage(BaseRequest baseRequest,
 		PrincipalDetails principalDetails) {
 
-		Page page = pageRepository.findById(baseRequest.pageId()).
+		Page page = pageDataAccess.findById(baseRequest.pageId()).
 			orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
@@ -207,7 +207,7 @@ public class PageService {
 	 */
 	public PageDetailsResponse getPageMain(BaseRequest baseRequest,
 		PrincipalDetails principalDetails) {
-		Page page = pageRepository.findById(baseRequest.pageId())
+		Page page = pageDataAccess.findById(baseRequest.pageId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		return getPageDetailsResponse(page, principalDetails);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 import com.linkmoa.source.domain.search.dto.request.SearchRequest;
 import com.linkmoa.source.domain.search.dto.response.SearchPageResponse;
 import com.linkmoa.source.domain.site.dto.response.SiteSimpleResponse;
@@ -22,22 +22,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SearchService {
 
-	private final PageRepository pageRepository;
+	private final PageDataAccess pageDataAccess;
 
 	public ApiResponseSpec<SearchPageResponse> searchDirectoriesAndSitesByTitleInPage(SearchRequest searchRequest,
 		PrincipalDetails principalDetails) {
-		Long rootDirectoryIdByPageId = pageRepository.findRootDirectoryIdByPageId(searchRequest.pageId());
+		Long rootDirectoryIdByPageId = pageDataAccess.findRootDirectoryIdByPageId(searchRequest.pageId());
 
 		log.debug("🔍 pageSerivce Search 요청: pageId={}, keyword='{}', type={}",
 			searchRequest.pageId(),
 			searchRequest.keyword(),
 			searchRequest.searchType());
 
-		List<Object[]> directoriesAndSitesByKeyword = pageRepository.findDirectoriesAndSitesByNameKeyword(
+		List<Object[]> directoriesAndSitesByKeyword = pageDataAccess.findDirectoriesAndSitesByNameKeyword(
 			searchRequest.keyword(),
 			rootDirectoryIdByPageId,
 			principalDetails.getId());
-		log.debug("🔍 pageRepository Search 요청: ");
+		log.debug("🔍 pageDataAccess Search 요청: ");
 
 		List<DirectorySimpleResponse> directories = mapToDirectoryResponses(
 			directoriesAndSitesByKeyword);

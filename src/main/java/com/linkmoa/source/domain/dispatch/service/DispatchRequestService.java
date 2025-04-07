@@ -31,7 +31,7 @@ import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.page.error.PageErrorCode;
 import com.linkmoa.source.domain.page.exception.PageException;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class DispatchRequestService {
 	private final MemberService memberService;
 	private final DirectoryDataAccess directoryDataAccess;
 	private final DirectoryTransmissionRequestRepository directoryTransmissionRequestRepository;
-	private final PageRepository pageRepository;
+	private final PageDataAccess pageDataAccess;
 	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
 	private final NotificationRepository notificationRepository;
 	private final NotificationService notificationService;
@@ -110,7 +110,7 @@ public class DispatchRequestService {
 			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL); // 유저가 없으면 예외 발생
 		}
 
-		Page page = pageRepository.findById(request.baseRequest().pageId())
+		Page page = pageDataAccess.findById(request.baseRequest().pageId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		if (page.getPageType() == PageType.PERSONAL) {

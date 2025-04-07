@@ -18,7 +18,7 @@ import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
 import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
 import com.linkmoa.source.domain.notification.constant.NotificationType;
 import com.linkmoa.source.domain.page.entity.Page;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 
-	private final PageRepository pageRepository;
+	private final PageDataAccess pageDataAccess;
 	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
 	private final MemberPageLinkRepository memberPageLinkRepository;
 	private final MemberService memberService;

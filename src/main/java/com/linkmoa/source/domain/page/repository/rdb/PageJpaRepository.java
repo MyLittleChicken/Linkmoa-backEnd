@@ -1,4 +1,4 @@
-package com.linkmoa.source.domain.page.repository;
+package com.linkmoa.source.domain.page.repository.rdb;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.linkmoa.source.domain.page.entity.Page;
 
-public interface PageRepository extends JpaRepository<Page, Long>, PageRepositoryCustom {
+public interface PageJpaRepository extends JpaRepository<Page, Long> {
 
 	// TODO : 검색 관련 모든 기능 수정해야됨
 	@Query(value =
@@ -40,5 +40,4 @@ public interface PageRepository extends JpaRepository<Page, Long>, PageRepositor
 		@Param("name") String name,
 		@Param("rootDirectoryId") Long rootDirectoryId,
 		@Param("memberId") Long memberId);
-
 }
