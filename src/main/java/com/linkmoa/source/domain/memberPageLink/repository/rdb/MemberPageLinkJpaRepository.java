@@ -1,4 +1,4 @@
-package com.linkmoa.source.domain.memberPageLink.repository;
+package com.linkmoa.source.domain.memberPageLink.repository.rdb;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +12,7 @@ import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
 
-public interface MemberPageLinkRepository extends JpaRepository<MemberPageLink, Long>, MemberPageLinkRepositoryCustom {
+public interface MemberPageLinkJpaRepository extends JpaRepository<MemberPageLink, Long> {
 
 	@Query("SELECT m.permissionType FROM MemberPageLink m where m.member.id =:memberId AND m.page.id =:pageId")
 	PermissionType findPermissionTypeByMemberIdAndPageId(@Param("memberId") Long memberId,
@@ -44,5 +44,4 @@ public interface MemberPageLinkRepository extends JpaRepository<MemberPageLink, 
 		"      WHERE mp.page.id = m.page.id " +
 		"      AND mp.permissionType = com.linkmoa.source.domain.memberPageLink.constant.PermissionType.HOST) = 1")
 	List<MemberPageLink> findUniqueHostByMemberId(@Param("memberId") Long memberId);
-
 }

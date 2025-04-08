@@ -18,7 +18,7 @@ import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
-import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
+import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
@@ -43,7 +43,7 @@ public class PageService {
 	private final PageDataAccess pageDataAccess;
 	private final MemberService memberService;
 	private final DirectoryDataAccess directoryDataAccess;
-	private final MemberPageLinkRepository memberPageLinkRepository;
+	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
 	private final PageAsyncService pageAsyncService;
 	private final FavoriteRepository favoriteRepository;
 	private final FavoriteService favoriteService;
@@ -81,7 +81,7 @@ public class PageService {
 	 */
 	private void validatePersonalPageNotExists(Member hostMember) {
 
-		if (memberPageLinkRepository.findPersonalPageByMemberId(hostMember.getId()).isPresent()) {
+		if (memberPageLinkDataAccess.findPersonalPageByMemberId(hostMember.getId()).isPresent()) {
 			throw new MemberException(MemberErrorCode.MEMBER_EXIST_EMAIL);
 		}
 	}
@@ -141,7 +141,7 @@ public class PageService {
 	@Transactional
 	public void saveEntities(Page page, MemberPageLink memberPageLink, Directory rootDirectory) {
 		pageDataAccess.save(page);
-		memberPageLinkRepository.save(memberPageLink);
+		memberPageLinkDataAccess.save(memberPageLink);
 		directoryDataAccess.save(rootDirectory);
 	}
 
@@ -175,7 +175,7 @@ public class PageService {
 
 		validateCanLeaveSharePage(page, member);
 
-		memberPageLinkRepository.deleteByMemberIdAndPageId(member.getId(), page.getId());
+		memberPageLinkDataAccess.deleteByMemberIdAndPageId(member.getId(), page.getId());
 
 		return SharePageLeaveResponse.builder()
 			.pageId(page.getId())
@@ -189,11 +189,11 @@ public class PageService {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_PERSONAL_PAGE);
 		}
 
-		if (memberPageLinkRepository.countMembersInSharedPage(page.getId()) == 1) {
+		if (memberPageLinkDataAccess.countMembersInSharedPage(page.getId()) == 1) {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_SHARED_PAGE_SINGLE_MEMBER);
 		}
 
-		if (memberPageLinkRepository.countHostMembersInSharedPage(page.getId(), member) == 1) {
+		if (memberPageLinkDataAccess.countHostMembersInSharedPage(page.getId(), member) == 1) {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_SHARED_PAGE_SINGLE_HOST);
 		}
 
@@ -235,14 +235,14 @@ public class PageService {
 	public PageDetailsResponse loadPersonalPageMain(PrincipalDetails principalDetails) {
 		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
 
-		Page personalPage = memberPageLinkRepository.findPersonalPageByMemberId(member.getId())
+		Page personalPage = memberPageLinkDataAccess.findPersonalPageByMemberId(member.getId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		return getPageDetailsResponse(personalPage, principalDetails);
 	}
 
 	public Page getPersonalPage(Long memberId) {
-		return memberPageLinkRepository.findPersonalPageByMemberId(memberId)
+		return memberPageLinkDataAccess.findPersonalPageByMemberId(memberId)
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 	}
 

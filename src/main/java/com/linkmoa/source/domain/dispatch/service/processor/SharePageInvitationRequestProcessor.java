@@ -15,7 +15,7 @@ import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
-import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
+import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.notification.constant.NotificationType;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.page.repository.PageDataAccess;
@@ -28,7 +28,7 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 
 	private final PageDataAccess pageDataAccess;
 	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
-	private final MemberPageLinkRepository memberPageLinkRepository;
+	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
 	private final MemberService memberService;
 
 	@Override
@@ -72,7 +72,7 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 	}
 
 	public void acceptSharePageInvitation(Page page, Member member, PermissionType permissionType) {
-		boolean existingLink = memberPageLinkRepository.existsByMemberAndPage(member.getId(), page.getId());
+		boolean existingLink = memberPageLinkDataAccess.existsByMemberAndPage(member.getId(), page.getId());
 
 		if (!existingLink) {
 			MemberPageLink memberPageLink = MemberPageLink.builder()
@@ -80,7 +80,7 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 				.member(member)
 				.permissionType(permissionType)
 				.build();
-			memberPageLinkRepository.save(memberPageLink);
+			memberPageLinkDataAccess.save(memberPageLink);
 		}
 	}
 

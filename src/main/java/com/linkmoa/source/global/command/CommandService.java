@@ -7,18 +7,18 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
-import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
+import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.global.constant.CommandType;
 
 @Service
 public class CommandService {
 
 	private final Map<PermissionType, Set<CommandType>> permissionToCommandsMap = new EnumMap<>(PermissionType.class);
-	private final MemberPageLinkRepository memberPageLinkRepository;
+	private final MemberPageLinkDataAccess memberPageLinkRepository;
 
-	public CommandService(MemberPageLinkRepository memberPageLinkRepository) {
+	public CommandService(MemberPageLinkDataAccess memberPageLinkDataAccess) {
 
-		this.memberPageLinkRepository = memberPageLinkRepository;
+		this.memberPageLinkRepository = memberPageLinkDataAccess;
 
 		permissionToCommandsMap.put(PermissionType.ADMIN, Set.of(
 			CommandType.VIEW, CommandType.EDIT, CommandType.CREATE, CommandType.SHARED_PAGE_LEAVE,
