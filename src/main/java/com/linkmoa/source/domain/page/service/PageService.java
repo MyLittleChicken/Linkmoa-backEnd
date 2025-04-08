@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
-import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
+import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
@@ -18,7 +18,7 @@ import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
-import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
+import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
@@ -28,7 +28,7 @@ import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
 import com.linkmoa.source.domain.page.entity.Page;
 import com.linkmoa.source.domain.page.error.PageErrorCode;
 import com.linkmoa.source.domain.page.exception.PageException;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 import com.linkmoa.source.global.dto.request.BaseRequest;
 
@@ -40,12 +40,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PageService {
 
-	private final PageRepository pageRepository;
+	private final PageDataAccess pageDataAccess;
 	private final MemberService memberService;
-	private final DirectoryRepository directoryRepository;
-	private final MemberPageLinkRepository memberPageLinkRepository;
+	private final DirectoryDataAccess directoryDataAccess;
+	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
 	private final PageAsyncService pageAsyncService;
-	private final FavoriteRepository favoriteRepository;
+	private final FavoriteDataAccess favoriteDataAccess;
 	private final FavoriteService favoriteService;
 
 	/**
@@ -81,7 +81,7 @@ public class PageService {
 	 */
 	private void validatePersonalPageNotExists(Member hostMember) {
 
-		if (memberPageLinkRepository.findPersonalPageByMemberId(hostMember.getId()).isPresent()) {
+		if (memberPageLinkDataAccess.findPersonalPageByMemberId(hostMember.getId()).isPresent()) {
 			throw new MemberException(MemberErrorCode.MEMBER_EXIST_EMAIL);
 		}
 	}
@@ -140,9 +140,9 @@ public class PageService {
 
 	@Transactional
 	public void saveEntities(Page page, MemberPageLink memberPageLink, Directory rootDirectory) {
-		pageRepository.save(page);
-		memberPageLinkRepository.save(memberPageLink);
-		directoryRepository.save(rootDirectory);
+		pageDataAccess.save(page);
+		memberPageLinkDataAccess.save(memberPageLink);
+		directoryDataAccess.save(rootDirectory);
 	}
 
 	@Transactional
@@ -151,14 +151,14 @@ public class PageService {
 		PrincipalDetails principalDetails) {
 
 		Long pageId = request.baseRequest().pageId();
-		pageRepository.findById(pageId)
+		pageDataAccess.findById(pageId)
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
-		pageRepository.deleteById(pageId);
+		pageDataAccess.deleteById(pageId);
 		return request.baseRequest().pageId();
 	}
 
 	public List<PageResponse> findAllPages(PrincipalDetails principalDetails) {
-		List<PageResponse> allPagesByMemberId = pageRepository.findAllPagesByMemberId(principalDetails.getId());
+		List<PageResponse> allPagesByMemberId = pageDataAccess.findAllPagesByMemberId(principalDetails.getId());
 
 		return allPagesByMemberId;
 
@@ -168,14 +168,14 @@ public class PageService {
 	public SharePageLeaveResponse leaveSharePage(BaseRequest baseRequest,
 		PrincipalDetails principalDetails) {
 
-		Page page = pageRepository.findById(baseRequest.pageId()).
+		Page page = pageDataAccess.findById(baseRequest.pageId()).
 			orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
 
 		validateCanLeaveSharePage(page, member);
 
-		memberPageLinkRepository.deleteByMemberIdAndPageId(member.getId(), page.getId());
+		memberPageLinkDataAccess.deleteByMemberIdAndPageId(member.getId(), page.getId());
 
 		return SharePageLeaveResponse.builder()
 			.pageId(page.getId())
@@ -189,11 +189,11 @@ public class PageService {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_PERSONAL_PAGE);
 		}
 
-		if (memberPageLinkRepository.countMembersInSharedPage(page.getId()) == 1) {
+		if (memberPageLinkDataAccess.countMembersInSharedPage(page.getId()) == 1) {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_SHARED_PAGE_SINGLE_MEMBER);
 		}
 
-		if (memberPageLinkRepository.countHostMembersInSharedPage(page.getId(), member) == 1) {
+		if (memberPageLinkDataAccess.countHostMembersInSharedPage(page.getId(), member) == 1) {
 			throw new PageException(PageErrorCode.CANNOT_LEAVE_SHARED_PAGE_SINGLE_HOST);
 		}
 
@@ -207,7 +207,7 @@ public class PageService {
 	 */
 	public PageDetailsResponse getPageMain(BaseRequest baseRequest,
 		PrincipalDetails principalDetails) {
-		Page page = pageRepository.findById(baseRequest.pageId())
+		Page page = pageDataAccess.findById(baseRequest.pageId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		return getPageDetailsResponse(page, principalDetails);
@@ -216,7 +216,7 @@ public class PageService {
 	private PageDetailsResponse getPageDetailsResponse(Page page, PrincipalDetails principalDetails) {
 		Long directoryId = page.getRootDirectory().getId();
 
-		List<Favorite> favorites = favoriteRepository.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
 
 		List<Long> favoriteDirectoryIds = favoriteService.findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);
@@ -235,14 +235,14 @@ public class PageService {
 	public PageDetailsResponse loadPersonalPageMain(PrincipalDetails principalDetails) {
 		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
 
-		Page personalPage = memberPageLinkRepository.findPersonalPageByMemberId(member.getId())
+		Page personalPage = memberPageLinkDataAccess.findPersonalPageByMemberId(member.getId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
 		return getPageDetailsResponse(personalPage, principalDetails);
 	}
 
 	public Page getPersonalPage(Long memberId) {
-		return memberPageLinkRepository.findPersonalPageByMemberId(memberId)
+		return memberPageLinkDataAccess.findPersonalPageByMemberId(memberId)
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 	}
 

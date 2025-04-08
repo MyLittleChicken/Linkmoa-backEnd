@@ -8,17 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.constant.FavoriteAction;
 import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.favorite.dto.request.FavoriteUpdateDto;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
 import com.linkmoa.source.domain.favorite.error.FavoriteErrorCode;
 import com.linkmoa.source.domain.favorite.exception.FavoriteException;
-import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
+import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.site.dto.response.SiteSimpleResponse;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,14 +26,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FavoriteService {
 
-	private final FavoriteRepository favoriteRepository;
-	private final DirectoryRepository directoryRepository;
-	private final SiteRepository siteRepository;
+	private final FavoriteDataAccess favoriteDataAccess;
+	private final DirectoryDataAccess directoryDataAccess;
+	private final SiteDataAccess siteDataAccess;
 
 	@Transactional
 	public FavoriteUpdateDto.SimpleResponse updateFavorite(FavoriteUpdateDto.Request request,
 		PrincipalDetails principalDetails) {
-		Favorite favorite = favoriteRepository.findByItemIdAndItemType(request.itemId(),
+		Favorite favorite = favoriteDataAccess.findByItemIdAndItemType(request.itemId(),
 			request.itemType());
 
 		if (favorite == null) {
@@ -49,7 +49,7 @@ public class FavoriteService {
 		try {
 			Member member = principalDetails.getMember();
 
-			favoriteRepository.incrementOrderIndexesForMember(member);
+			favoriteDataAccess.incrementOrderIndexesForMember(member);
 
 			Favorite newFavorite = Favorite.builder()
 				.member(member)
@@ -58,7 +58,7 @@ public class FavoriteService {
 				.orderIndex(1)
 				.build();
 
-			favoriteRepository.save(newFavorite);
+			favoriteDataAccess.save(newFavorite);
 		} catch (Exception e) {
 			throw new FavoriteException(FavoriteErrorCode.FAVORITE_CREATE_FAILED);
 		}
@@ -74,8 +74,8 @@ public class FavoriteService {
 	private FavoriteUpdateDto.SimpleResponse deleteFavorite(Favorite favorite) {
 
 		try {
-			favoriteRepository.decrementFavoriteOrderIndexes(favorite.getOrderIndex());
-			favoriteRepository.delete(favorite);
+			favoriteDataAccess.decrementFavoriteOrderIndexes(favorite.getOrderIndex());
+			favoriteDataAccess.delete(favorite);
 		} catch (Exception e) {
 			throw new FavoriteException(FavoriteErrorCode.FAVORITE_DELETE_FAILED);
 		}
@@ -103,14 +103,14 @@ public class FavoriteService {
 	}
 
 	public FavoriteUpdateDto.DetailResponse findFavoriteDetails(PrincipalDetails principalDetails) {
-		List<Favorite> favorites = favoriteRepository.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
 
 		List<Long> favoriteDirectoryIds = findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = findFavoriteSiteIds(favorites);
 
-		List<DirectorySimpleResponse> directoryDetailResponses = directoryRepository.findFavoriteDirectories(
+		List<DirectorySimpleResponse> directoryDetailResponses = directoryDataAccess.findFavoriteDirectories(
 			favoriteDirectoryIds);
-		List<SiteSimpleResponse> sitesDetails = siteRepository.findFavoriteSites(favoriteSiteIds);
+		List<SiteSimpleResponse> sitesDetails = siteDataAccess.findFavoriteSites(favoriteSiteIds);
 
 		return FavoriteUpdateDto.DetailResponse.builder()
 			.email(principalDetails.getEmail())

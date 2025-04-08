@@ -23,7 +23,10 @@ public class RefreshTokenService {
 	public void saveRefreshToken(String token, String email) {
 
 		refreshTokenRepository.findRefreshTokenByEmail(email)
-			.ifPresent(existingToken -> deleteRefreshToken(email));
+			.ifPresent(existingToken -> {
+				refreshTokenRepository.deleteByEmail(email);
+				refreshTokenRepository.flush(); // ← 삭제 즉시 DB 반영
+			});
 
 		refreshTokenRepository.save(RefreshToken.builder()
 			.token(token)

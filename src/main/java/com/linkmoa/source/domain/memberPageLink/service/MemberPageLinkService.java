@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
-import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkRepository;
+import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.entity.Page;
-import com.linkmoa.source.domain.page.repository.PageRepository;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class MemberPageLinkService {
-	private final MemberPageLinkRepository memberPageLinkRepository;
-	private final PageRepository pageRepository;
+	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
+	private final PageDataAccess pageDataAccess;
 
 	public List<Page> PagesWithUniqueHostByMember(Long memberId) {
 		List<Page> uniqueHostPages = new ArrayList<>();
-		List<MemberPageLink> uniqueHostLinks = memberPageLinkRepository.findUniqueHostByMemberId(memberId);
+		List<MemberPageLink> uniqueHostLinks = memberPageLinkDataAccess.findUniqueHostByMemberId(memberId);
 		log.info("실행은 됐음 PagesWithUniqueHostByMember");
 		for (MemberPageLink uniqueHostLink : uniqueHostLinks) {
 			Page page = uniqueHostLink.getPage();
@@ -44,12 +44,12 @@ public class MemberPageLinkService {
 		if (!uniqueHostPages.isEmpty()) {
 			// 유일한 호스트인 페이지가 있다면 해당 페이지 삭제
 			for (Page page : uniqueHostPages) {
-				pageRepository.deleteById(page.getId());
+				pageDataAccess.deleteById(page.getId());
 			}
 		}
 
 		// MemberPageLink는 항상 삭제
-		memberPageLinkRepository.deleteByMemberId(memberId);
+		memberPageLinkDataAccess.deleteByMemberId(memberId);
 	}
 
 }

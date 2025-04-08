@@ -12,7 +12,7 @@ import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
 import com.linkmoa.source.domain.dispatch.entity.DirectoryTransmissionRequest;
 import com.linkmoa.source.domain.dispatch.error.DispatchErrorCode;
 import com.linkmoa.source.domain.dispatch.exception.DispatchException;
-import com.linkmoa.source.domain.dispatch.repository.DirectoryTransmissionRequestRepository;
+import com.linkmoa.source.domain.dispatch.repository.DirectoryTransmissionRequestDataAccess;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.notification.constant.NotificationType;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DirectoryTransmissionRequestProcessor implements DispatchProcessor {
 
-	private final DirectoryTransmissionRequestRepository directoryTransmissionRequestRepository;
+	private final DirectoryTransmissionRequestDataAccess directoryTransmissionRequestDataAccess;
 	private final MemberService memberService;
 	private final PageService pageService;
 	private final DirectoryService directoryService;
@@ -41,7 +41,7 @@ public class DirectoryTransmissionRequestProcessor implements DispatchProcessor 
 		//요청타입 검증
 		validateNotificationType(NotificationType.TRANSMIT_DIRECTORY, notificationType);
 
-		DirectoryTransmissionRequest directoryTransmissionRequest = directoryTransmissionRequestRepository.findById(
+		DirectoryTransmissionRequest directoryTransmissionRequest = directoryTransmissionRequestDataAccess.findById(
 				requestId)
 			.orElseThrow(() -> new DispatchException(DispatchErrorCode.TRANSMIT_DIRECTORY_REQUEST_NOT_FOUND));
 

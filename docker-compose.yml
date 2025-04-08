@@ -7,10 +7,9 @@ services:
       dockerfile: Dockerfile
     container_name: linkmoa-server
     env_file:
-      - .env.local    # 환경 변수 파일 설정
+      - ${ENV_FILE}  # 환경 변수 파일 설정
     depends_on:
       - linkmoa-database
-      - linkmoa-redis
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}   # Spring Boot 포트 매핑
     restart: always
@@ -44,17 +43,7 @@ services:
     volumes:
       - linkmoa-database:/var/lib/mysql   # 데이터베이스 볼륨 설정
       - ./src/main/resources/db/schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-  linkmoa-redis:
-    image: redis:latest
-    container_name: linkmoa-redis
-    command: --port ${REDIS_PORT} --requirepass ${REDIS_PASSWORD}   # Redis 포트 및 비밀번호 설정
-    expose:
-      - ${REDIS_PORT}    # 내부에서 사용하는 Redis 포트
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}    # Redis 포트 매핑
-    volumes:
-      - linkmoa-redis:/data    # Redis 볼륨 설정
-    restart: always
+
 
 
 volumes:

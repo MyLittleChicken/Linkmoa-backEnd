@@ -16,16 +16,16 @@ import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.error.DirectoryErrorCode;
 import com.linkmoa.source.domain.directory.exception.DirectoryException;
-import com.linkmoa.source.domain.directory.repository.DirectoryRepository;
+import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
-import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
+import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.domain.site.entity.Site;
 import com.linkmoa.source.domain.site.error.SiteErrorCode;
 import com.linkmoa.source.domain.site.exception.SiteException;
-import com.linkmoa.source.domain.site.repository.SiteRepository;
+import com.linkmoa.source.domain.site.repository.SiteDataAccess;
 import com.linkmoa.source.global.aop.annotation.ValidationApplied;
 
 import lombok.RequiredArgsConstructor;
@@ -36,9 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DirectoryService {
 
-	private final DirectoryRepository directoryRepository;
-	private final SiteRepository siteRepository;
-	private final FavoriteRepository favoriteRepository;
+	private final DirectoryDataAccess directoryDataAccess;
+	private final SiteDataAccess siteDataAccess;
+	private final FavoriteDataAccess favoriteDataAccess;
 	private final FavoriteService favoriteService;
 
 	@Transactional
@@ -50,7 +50,7 @@ public class DirectoryService {
 		Integer nextOrderIndex;
 
 		if (request.parentDirectoryId() != null) {
-			parentDirectory = directoryRepository.findById(request.parentDirectoryId())
+			parentDirectory = directoryDataAccess.findById(request.parentDirectoryId())
 				.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 			nextOrderIndex = parentDirectory.getNextOrderIndex();
 		} else {
@@ -68,7 +68,7 @@ public class DirectoryService {
 			parentDirectory.addChildDirectory(newDirectory);
 		}
 
-		directoryRepository.save(newDirectory);
+		directoryDataAccess.save(newDirectory);
 
 		return newDirectory.getId();
 
@@ -79,7 +79,7 @@ public class DirectoryService {
 	public Long updateDirectory(DirectoryUpdateDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory updateDirectory = directoryRepository.findById(request.directoryId())
+		Directory updateDirectory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
 		updateDirectory.updateDirectoryNameAndDescription(request.directoryName(),
@@ -93,15 +93,15 @@ public class DirectoryService {
 	public Long deleteDirectory(DirectoryIdDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory deleteDirectory = directoryRepository.findById(request.directoryId())
+		Directory deleteDirectory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
 		Long directoryId = deleteDirectory.getId();
 		Integer orderIndex = deleteDirectory.getOrderIndex();
 		Directory parentDirectory = deleteDirectory.getParentDirectory();
 
-		directoryRepository.decrementDirectoryAndSiteOrderIndexes(parentDirectory, orderIndex);
-		directoryRepository.delete(deleteDirectory);
+		directoryDataAccess.decrementDirectoryAndSiteOrderIndexes(parentDirectory, orderIndex);
+		directoryDataAccess.delete(deleteDirectory);
 
 		return directoryId;
 	}
@@ -111,13 +111,13 @@ public class DirectoryService {
 	public Long changeParentDirectory(DirectoryChangeParentDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory movingDirectory = directoryRepository.findById(request.movingDirectoryId())
+		Directory movingDirectory = directoryDataAccess.findById(request.movingDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		Directory newParentDirectory = directoryRepository.findById(request.newParentDirectoryId())
+		Directory newParentDirectory = directoryDataAccess.findById(request.newParentDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		directoryRepository.decrementDirectoryAndSiteOrderIndexes(
+		directoryDataAccess.decrementDirectoryAndSiteOrderIndexes(
 			movingDirectory.getParentDirectory(),
 			movingDirectory.getOrderIndex()
 		);
@@ -136,7 +136,7 @@ public class DirectoryService {
 
 		Integer currentItemOrderIndex;
 
-		Directory parentDirectory = directoryRepository.findById(request.parentDirectoryId())
+		Directory parentDirectory = directoryDataAccess.findById(request.parentDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
 		currentItemOrderIndex = getOrderIndex(
@@ -148,7 +148,7 @@ public class DirectoryService {
 		int startIndex = Math.min(currentItemOrderIndex, request.targetOrderIndex());
 		int endIndex = Math.max(currentItemOrderIndex, request.targetOrderIndex());
 
-		directoryRepository.updateDirectoryAndSiteOrderIndexesInRange(parentDirectory, startIndex, endIndex,
+		directoryDataAccess.updateDirectoryAndSiteOrderIndexesInRange(parentDirectory, startIndex, endIndex,
 			isIncrement);
 
 		setOrderIndex(
@@ -167,12 +167,12 @@ public class DirectoryService {
 	private Integer getOrderIndex(Long targetId, ItemType itemType) {
 		switch (itemType) {
 			case DIRECTORY -> {
-				Directory directory = directoryRepository.findById(targetId)
+				Directory directory = directoryDataAccess.findById(targetId)
 					.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 				return directory.getOrderIndex();
 			}
 			case SITE -> {
-				Site site = siteRepository.findById(targetId)
+				Site site = siteDataAccess.findById(targetId)
 					.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 				return site.getOrderIndex();
 			}
@@ -184,12 +184,12 @@ public class DirectoryService {
 		Integer targetOrderIndex) {
 		switch (itemType) {
 			case DIRECTORY -> {
-				Directory directory = directoryRepository.findById(targetId)
+				Directory directory = directoryDataAccess.findById(targetId)
 					.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 				directory.setOrderIndex(targetOrderIndex);
 			}
 			case SITE -> {
-				Site site = siteRepository.findById(targetId)
+				Site site = siteDataAccess.findById(targetId)
 					.orElseThrow(() -> new SiteException(SiteErrorCode.SITE_NOT_FOUND));
 				site.setOrderIndex(targetOrderIndex);
 			}
@@ -202,19 +202,19 @@ public class DirectoryService {
 		DirectoryIdDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory targetDirectory = directoryRepository.findById(request.directoryId())
+		Directory targetDirectory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		List<Favorite> favorites = favoriteRepository.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
 
 		List<Long> favoriteDirectoryIds = favoriteService.findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);
 
 		List<DirectoryDetailResponse> directoryDetailResponses =
-			directoryRepository.findDirectoryDetails(targetDirectory.getId(), favoriteDirectoryIds);
+			directoryDataAccess.findDirectoryDetails(targetDirectory.getId(), favoriteDirectoryIds);
 
 		List<SiteDetailResponse> siteDetailResponses =
-			siteRepository.findSitesDetails(targetDirectory.getId(), favoriteSiteIds);
+			siteDataAccess.findSitesDetails(targetDirectory.getId(), favoriteSiteIds);
 
 		return DirectoryIdDto.Response.builder()
 			.targetDirectoryDescription(targetDirectory.getDirectoryDescription())
@@ -230,17 +230,17 @@ public class DirectoryService {
 		DirectoryPasteDto.Request request,
 		PrincipalDetails principalDetails) {
 
-		Directory originalDirectory = directoryRepository.findById(request.originalDirectoryId())
+		Directory originalDirectory = directoryDataAccess.findById(request.originalDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		Directory destinationDirectory = directoryRepository.findById(request.destinationDirectoryId())
+		Directory destinationDirectory = directoryDataAccess.findById(request.destinationDirectoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		directoryRepository.incrementDirectoryAndSiteOrderIndexes(destinationDirectory, 0);
+		directoryDataAccess.incrementDirectoryAndSiteOrderIndexes(destinationDirectory, 0);
 
 		Directory pastedDirectory = originalDirectory.cloneDirectory(destinationDirectory);
 		pastedDirectory.setOrderIndex(1);
-		directoryRepository.save(pastedDirectory);
+		directoryDataAccess.save(pastedDirectory);
 
 		return DirectoryPasteDto.Response.builder()
 			.pastedirectoryId(pastedDirectory.getId())
@@ -251,16 +251,16 @@ public class DirectoryService {
 
 	public Directory cloneDirectory(Long newRootDirectoryId, Long originalDirectoryId) {
 
-		Directory originalDirectory = directoryRepository.findById(originalDirectoryId)
+		Directory originalDirectory = directoryDataAccess.findById(originalDirectoryId)
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		Directory newParentDirectory = directoryRepository.findById(newRootDirectoryId).orElse(null);
+		Directory newParentDirectory = directoryDataAccess.findById(newRootDirectoryId).orElse(null);
 
-		directoryRepository.incrementDirectoryAndSiteOrderIndexes(newParentDirectory, 0);
+		directoryDataAccess.incrementDirectoryAndSiteOrderIndexes(newParentDirectory, 0);
 
 		Directory clonedDirectory = originalDirectory.cloneDirectory(newParentDirectory);
 		clonedDirectory.setOrderIndex(1);
-		directoryRepository.save(clonedDirectory);
+		directoryDataAccess.save(clonedDirectory);
 		return clonedDirectory;
 	}
 }
