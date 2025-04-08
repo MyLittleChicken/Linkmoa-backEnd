@@ -25,7 +25,7 @@ import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.notification.aop.annotation.NotificationApplied;
-import com.linkmoa.source.domain.notification.repository.NotificationRepository;
+import com.linkmoa.source.domain.notification.repository.NotificationDataAccess;
 import com.linkmoa.source.domain.notification.service.NotificationService;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.entity.Page;
@@ -47,7 +47,7 @@ public class DispatchRequestService {
 	private final DirectoryTransmissionRequestRepository directoryTransmissionRequestRepository;
 	private final PageDataAccess pageDataAccess;
 	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
-	private final NotificationRepository notificationRepository;
+	private final NotificationDataAccess notificationDataAccess;
 	private final NotificationService notificationService;
 
 	@Transactional
@@ -175,7 +175,7 @@ public class DispatchRequestService {
 			.SharePageInvitationRequests(findSharePageInvitationsForReceiver(receiverEmail))
 			.build();
 
-		notificationRepository.updateUnreadNotificationsToReadByReceiverEmail(receiverEmail);
+		notificationDataAccess.updateUnreadNotificationsToReadByReceiverEmail(receiverEmail);
 
 		notificationService.sendUnreadNotificationCount(receiverEmail);
 

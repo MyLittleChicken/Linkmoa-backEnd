@@ -1,17 +1,19 @@
-package com.linkmoa.source.domain.notification.repository;
+package com.linkmoa.source.domain.notification.repository.rdb;
 
 import static com.linkmoa.source.domain.notification.entity.QNotification.*;
+
+import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NotificationRepositoryImpl implements NotificationRepositoryCustom {
+@Repository
+public class NotificationQueryRepositoryImpl {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
 	public Long updateUnreadNotificationsToReadByReceiverEmail(String receiverEmail) {
 		return jpaQueryFactory
 			.update(notification)
@@ -23,7 +25,6 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
 			.execute();
 	}
 
-	@Override
 	public Long countUnreadNotificationsByReceiverEmail(String receiverEmail) {
 		return jpaQueryFactory
 			.select(notification.count().coalesce(0L))

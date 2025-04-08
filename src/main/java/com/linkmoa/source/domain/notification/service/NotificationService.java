@@ -11,7 +11,7 @@ import com.linkmoa.source.domain.notification.constant.NotificationType;
 import com.linkmoa.source.domain.notification.dto.response.NotificationResponse;
 import com.linkmoa.source.domain.notification.dto.response.UnreadNotificationCountResponse;
 import com.linkmoa.source.domain.notification.entity.Notification;
-import com.linkmoa.source.domain.notification.repository.NotificationRepository;
+import com.linkmoa.source.domain.notification.repository.NotificationDataAccess;
 import com.linkmoa.source.domain.notification.repository.SseEmitterRepository;
 
 import jakarta.transaction.Transactional;
@@ -23,7 +23,7 @@ public class NotificationService {
 	private static final Long DEFAULT_TIMEOUT = (60L * 1000 * 60) * 6; // 6시간
 
 	private final SseEmitterRepository sseEmitterRepository;
-	private final NotificationRepository notificationRepository;
+	private final NotificationDataAccess notificationDataAccess;
 
 	public SseEmitter subscribe(final String email, String lastEventId) {
 		String emitterId = makeTimeIncludeId(email);
@@ -37,7 +37,7 @@ public class NotificationService {
 		String eventId = makeTimeIncludeId(email);
 
 		UnreadNotificationCountResponse unreadNotificationCountResponse = NotificationResponse.toUnreadNotificationCountResponse
-			(email, notificationRepository.countUnreadNotificationsByReceiverEmail(email));
+			(email, notificationDataAccess.countUnreadNotificationsByReceiverEmail(email));
 
 		sendNotificationWithUnreadCount(newEmitter, eventId, emitterId, unreadNotificationCountResponse);
 
@@ -68,7 +68,7 @@ public class NotificationService {
 	public Notification createRequestNotification(Member receiver, Member sender, NotificationType notificationType,
 		String content, Long requestId) {
 
-		return notificationRepository.save(
+		return notificationDataAccess.save(
 			Notification.builder()
 				.receiver(receiver)
 				.sender(sender)
@@ -98,7 +98,7 @@ public class NotificationService {
 	public void sendUnreadNotificationCount(String receiverEmail) {
 		String eventId = makeTimeIncludeId(receiverEmail);
 		Map<String, SseEmitter> emitters = sseEmitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
-		Long countUnreadNotifications = notificationRepository.countUnreadNotificationsByReceiverEmail(receiverEmail);
+		Long countUnreadNotifications = notificationDataAccess.countUnreadNotificationsByReceiverEmail(receiverEmail);
 
 		UnreadNotificationCountResponse unreadNotificationCountResponse = NotificationResponse
 			.toUnreadNotificationCountResponse(receiverEmail, countUnreadNotifications);
@@ -120,7 +120,7 @@ public class NotificationService {
 		// 2. 수신자와 관련된 모든 SSE (emitters) 가져오기
 		Map<String, SseEmitter> emitters = sseEmitterRepository.findAllEmitterStartWithByMemberId(receiverEmail);
 
-		Long countUnreadNotifications = notificationRepository.countUnreadNotificationsByReceiverEmail(receiverEmail);
+		Long countUnreadNotifications = notificationDataAccess.countUnreadNotificationsByReceiverEmail(receiverEmail);
 
 		NotificationResponse notificationResponse = NotificationResponse.of(notification, countUnreadNotifications);
 
@@ -139,7 +139,7 @@ public class NotificationService {
 
 	@Transactional
 	public void deleteAllNotificationByMember(Member member) {
-		notificationRepository.deleteAllBySenderEmailOrReceiver(member);
+		notificationDataAccess.deleteAllBySenderEmailOrReceiver(member);
 	}
 
 }
