@@ -1,11 +1,12 @@
-package com.linkmoa.source.domain.dispatch.repository.impl;
+package com.linkmoa.source.domain.dispatch.repository.rdb;
 
 import static com.linkmoa.source.domain.dispatch.entity.QDirectoryTransmissionRequest.*;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
-import com.linkmoa.source.domain.dispatch.repository.custom.DirectoryTransmissionRequestRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,11 +14,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class DirectoryTransmissionRequestRepositoryImpl implements DirectoryTransmissionRequestRepositoryCustom {
+@Repository
+public class DirectoryTransmissionRequestQueryDslRepositoryImpl {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
 	public List<DispatchDetailResponse> findAllDirectoryTransmissionRequestByReceiverEmail(String receiverEmail) {
 
 		List<DispatchDetailResponse> result = jpaQueryFactory.select(
@@ -39,4 +40,3 @@ public class DirectoryTransmissionRequestRepositoryImpl implements DirectoryTran
 		return receiverEmail == null ? null : directoryTransmissionRequest.receiver.email.eq(receiverEmail);
 	}
 }
-

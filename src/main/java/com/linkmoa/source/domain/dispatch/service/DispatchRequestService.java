@@ -19,8 +19,8 @@ import com.linkmoa.source.domain.dispatch.entity.DirectoryTransmissionRequest;
 import com.linkmoa.source.domain.dispatch.entity.SharePageInvitationRequest;
 import com.linkmoa.source.domain.dispatch.error.DispatchErrorCode;
 import com.linkmoa.source.domain.dispatch.exception.DispatchException;
-import com.linkmoa.source.domain.dispatch.repository.DirectoryTransmissionRequestRepository;
-import com.linkmoa.source.domain.dispatch.repository.SharePageInvitationRequestRepository;
+import com.linkmoa.source.domain.dispatch.repository.DirectoryTransmissionRequestDataAccess;
+import com.linkmoa.source.domain.dispatch.repository.SharePageInvitationRequestDataAccess;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.service.MemberService;
@@ -44,9 +44,9 @@ public class DispatchRequestService {
 
 	private final MemberService memberService;
 	private final DirectoryDataAccess directoryDataAccess;
-	private final DirectoryTransmissionRequestRepository directoryTransmissionRequestRepository;
+	private final DirectoryTransmissionRequestDataAccess directoryTransmissionRequestDataAccess;
 	private final PageDataAccess pageDataAccess;
-	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
+	private final SharePageInvitationRequestDataAccess sharePageInvitationRequestDataAccess;
 	private final NotificationDataAccess notificationDataAccess;
 	private final NotificationService notificationService;
 
@@ -61,7 +61,7 @@ public class DispatchRequestService {
 			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL);
 		}
 
-		DirectoryTransmissionRequest existingRequest = directoryTransmissionRequestRepository
+		DirectoryTransmissionRequest existingRequest = directoryTransmissionRequestDataAccess
 			.findByDirectoryIdAndRequestStatus(request.directoryId(), RequestStatus.WAITING)
 			.orElse(null);
 
@@ -69,7 +69,7 @@ public class DispatchRequestService {
 			throw new DispatchException(DispatchErrorCode.TRANSMIT_DIRECTORY_REQUEST_ALREADY_EXIST);
 		}
 
-		DirectoryTransmissionRequest acceptedRequest = directoryTransmissionRequestRepository
+		DirectoryTransmissionRequest acceptedRequest = directoryTransmissionRequestDataAccess
 			.findByDirectoryIdAndRequestStatus(request.directoryId(), RequestStatus.ACCEPTED)
 			.orElse(null);
 
@@ -86,7 +86,7 @@ public class DispatchRequestService {
 			.directory(directory)
 			.build();
 
-		return directoryTransmissionRequestRepository.save(directoryTransmissionRequest);
+		return directoryTransmissionRequestDataAccess.save(directoryTransmissionRequest);
 	}
 
 	public DirectoryTransmissionDto.Response mapToDirectorySendResponse(
@@ -117,7 +117,7 @@ public class DispatchRequestService {
 			throw new PageException(PageErrorCode.CANNOT_INVITE_TO_PERSONAL_PAGE);
 		}
 
-		SharePageInvitationRequest existingRequest = sharePageInvitationRequestRepository.
+		SharePageInvitationRequest existingRequest = sharePageInvitationRequestDataAccess.
 			findByPageIdAndRequestStatus(page.getId(), RequestStatus.WAITING)
 			.orElse(null);
 
@@ -125,7 +125,7 @@ public class DispatchRequestService {
 			throw new DispatchException(DispatchErrorCode.SHARE_PAGE_INVITATION_REQUEST_ALREADY_EXIST);
 		}
 
-		SharePageInvitationRequest acceptedRequest = sharePageInvitationRequestRepository
+		SharePageInvitationRequest acceptedRequest = sharePageInvitationRequestDataAccess
 			.findByPageIdAndRequestStatus(page.getId(), RequestStatus.ACCEPTED)
 			.orElse(null);
 
@@ -140,7 +140,7 @@ public class DispatchRequestService {
 			.permissionType(request.permissionType())
 			.build();
 
-		return sharePageInvitationRequestRepository.save(sharePageInvitationRequest);
+		return sharePageInvitationRequestDataAccess.save(sharePageInvitationRequest);
 	}
 
 	public SharePageInvitationRequestDto.Response mapToPageInviteRequestResponse(
@@ -156,14 +156,14 @@ public class DispatchRequestService {
 
 	public List<DispatchDetailResponse> findSharePageInvitationsForReceiver(String receiverEmail) {
 		List<DispatchDetailResponse> allSharePageInvitationsByReceiverEmail =
-			sharePageInvitationRequestRepository.findAllSharePageInvitationsByReceiverEmail(receiverEmail);
+			sharePageInvitationRequestDataAccess.findAllSharePageInvitationsByReceiverEmail(receiverEmail);
 
 		return allSharePageInvitationsByReceiverEmail;
 	}
 
 	public List<DispatchDetailResponse> findDirectoryDirectoryTransmissionsForReceiver(String receiverEmail) {
 		List<DispatchDetailResponse> allDirectoryTransmissionRequestByReceiverEmail =
-			directoryTransmissionRequestRepository.findAllDirectoryTransmissionRequestByReceiverEmail(receiverEmail);
+			directoryTransmissionRequestDataAccess.findAllDirectoryTransmissionRequestByReceiverEmail(receiverEmail);
 
 		return allDirectoryTransmissionRequestByReceiverEmail;
 	}

@@ -10,7 +10,7 @@ import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
 import com.linkmoa.source.domain.dispatch.entity.SharePageInvitationRequest;
 import com.linkmoa.source.domain.dispatch.error.DispatchErrorCode;
 import com.linkmoa.source.domain.dispatch.exception.DispatchException;
-import com.linkmoa.source.domain.dispatch.repository.SharePageInvitationRequestRepository;
+import com.linkmoa.source.domain.dispatch.repository.SharePageInvitationRequestDataAccess;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 
 	private final PageDataAccess pageDataAccess;
-	private final SharePageInvitationRequestRepository sharePageInvitationRequestRepository;
+	private final SharePageInvitationRequestDataAccess sharePageInvitationRequestDataAccess;
 	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
 	private final MemberService memberService;
 
@@ -43,7 +43,7 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 		// 요청 타입 검증
 		validateNotificationType(NotificationType.INVITE_PAGE, notificationType);
 
-		SharePageInvitationRequest sharePageInvitationRequest = sharePageInvitationRequestRepository.findById(
+		SharePageInvitationRequest sharePageInvitationRequest = sharePageInvitationRequestDataAccess.findById(
 				requestId).
 			orElseThrow(() -> new DispatchException(DispatchErrorCode.SHARE_PAGE_INVITATION_REQUEST_NOT_FOUND));
 
