@@ -19,7 +19,7 @@ import com.linkmoa.source.domain.directory.exception.DirectoryException;
 import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
-import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
+import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.domain.site.entity.Site;
@@ -38,7 +38,7 @@ public class DirectoryService {
 
 	private final DirectoryDataAccess directoryDataAccess;
 	private final SiteDataAccess siteDataAccess;
-	private final FavoriteRepository favoriteRepository;
+	private final FavoriteDataAccess favoriteDataAccess;
 	private final FavoriteService favoriteService;
 
 	@Transactional
@@ -205,7 +205,7 @@ public class DirectoryService {
 		Directory targetDirectory = directoryDataAccess.findById(request.directoryId())
 			.orElseThrow(() -> new DirectoryException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-		List<Favorite> favorites = favoriteRepository.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
 
 		List<Long> favoriteDirectoryIds = favoriteService.findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);

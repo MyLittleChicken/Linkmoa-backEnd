@@ -10,7 +10,7 @@ import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
-import com.linkmoa.source.domain.favorite.repository.FavoriteRepository;
+import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
@@ -45,7 +45,7 @@ public class PageService {
 	private final DirectoryDataAccess directoryDataAccess;
 	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
 	private final PageAsyncService pageAsyncService;
-	private final FavoriteRepository favoriteRepository;
+	private final FavoriteDataAccess favoriteDataAccess;
 	private final FavoriteService favoriteService;
 
 	/**
@@ -216,7 +216,7 @@ public class PageService {
 	private PageDetailsResponse getPageDetailsResponse(Page page, PrincipalDetails principalDetails) {
 		Long directoryId = page.getRootDirectory().getId();
 
-		List<Favorite> favorites = favoriteRepository.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
 
 		List<Long> favoriteDirectoryIds = favoriteService.findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);
