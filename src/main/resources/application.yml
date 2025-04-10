@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: linkmoa-service
+
   security:
     oauth2:
       client:
@@ -8,17 +11,7 @@ spring:
             client-secret: ${CLIENT_SECRET}
             redirect-uri: ${REDIRECT_URI}
             scope: profile, email
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        #        show_sql: true
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-  sql:
-    init:
-      mode: always
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
@@ -31,19 +24,7 @@ spring:
     access-token-expiration: 2592000000 # 30일 (한 달)  #3600000 : 1시간
     refresh-token-expiration: 1209600000
 
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-cloud:
-  gcp:
-    storage:
-      bucket: knulinkmoa-bucket
-

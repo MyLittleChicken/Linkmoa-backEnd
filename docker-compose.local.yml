@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  linkmoa-server:
+    depends_on:
+      - linkmoa-database
+
+  linkmoa-database:
+    image: mysql:8.0
+    container_name: linkmoa-database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # MySQL 루트 비밀번호
+      MYSQL_DATABASE: ${DB_DATABASE}       # 생성할 데이터베이스 이름
+      MYSQL_USER: ${DB_USERNAME}           # MySQL 사용자 이름
+      MYSQL_PASSWORD: ${DB_PASSWORD}       # MySQL 사용자 비밀번호
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    command: [
+      "--port=${DB_PORT}",
+      "--max_allowed_packet=32M",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--default-authentication-plugin=mysql_native_password"
+    ]
+    expose:
+      - ${DB_PORT}    # 내부에서 사용하는 MySQL 포트
+    ports:
+      - ${DB_PORT}:${DB_PORT}    # MySQL 포트 매핑
+    restart: always
+    volumes:
+      - linkmoa-database:/var/lib/mysql   # 데이터베이스 볼륨 설정
+      - ./src/main/resources/db/schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+volumes:
+  linkmoa-database:
