@@ -13,6 +13,3 @@ services:
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}   # Spring Boot 포트 매핑
     restart: always
-
-volumes:
-  linkmoa-database:
