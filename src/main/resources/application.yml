@@ -28,3 +28,26 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+  endpoint:
+    health:
+      show-details: always
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${spring.profiles.active}
+    enable:
+      jvm: true
+      process: true
+      http: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true  # 히스토그램 활성화

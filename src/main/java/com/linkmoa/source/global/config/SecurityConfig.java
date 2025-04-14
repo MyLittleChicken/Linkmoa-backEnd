@@ -47,6 +47,8 @@ public class SecurityConfig {
 					.requestMatchers(new AntPathRequestMatcher("/api/jwt/**")).permitAll()
 					.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
 					.requestMatchers(new AntPathRequestMatcher("/oauth2/**")).permitAll() // OAuth 관련 경로 허용
+					.requestMatchers(new AntPathRequestMatcher("/actuator/prometheus")).permitAll()
+					.requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll()
 					.anyRequest().authenticated()
 				)
 				.oauth2Login((oauth2) -> oauth2
