@@ -3,11 +3,29 @@
 
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
     <springProperty scope="context" name="springProfile" source="spring.profiles.active" />
+    <springProperty scope="context" name="lokiEndpoint" source="loki.endpoint"/>
 
     <!-- hibernate sql 로그 레벨 설정 -->
     <logger name="org.hibernate.SQL" level="DEBUG"/>
     <logger name="org.hibernate.type" level="TRACE"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+
+    <!-- Loki (dev, stg, prd) -->
+    <appender name="Loki" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>${lokiEndpoint}</url>
+        </http>
+        <format>
+            <label>
+                <pattern>app=${springAppName},env=${springProfile},host=${HOSTNAME},level=%level</pattern>
+            </label>
+            <message>
+                <pattern>{"time":"%d{ISO8601}","thread":"%thread","logger":"%logger{36}","level":"%level","message":"%message","exception":"%exception"}%n</pattern>
+            </message>
+        </format>
+        <batchSize>100</batchSize>
+        <batchTimeoutMs>1000</batchTimeoutMs>
+    </appender>
 
     <!-- 콘솔 로그 (local, dev, stg, prd) -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
@@ -45,6 +63,7 @@
         <root level="INFO">
             <appender-ref ref="Console"/>
             <appender-ref ref="FileAppender"/>
+            <appender-ref ref="Loki"/>
         </root>
     </springProfile>
 
@@ -53,6 +72,7 @@
         <root level="INFO">
             <appender-ref ref="Console"/>
             <appender-ref ref="FileAppender"/>
+            <appender-ref ref="Loki"/>
         </root>
     </springProfile>
 
@@ -61,6 +81,7 @@
         <root level="INFO">
             <appender-ref ref="Console"/>
             <appender-ref ref="FileAppender"/>
+            <appender-ref ref="Loki"/>
         </root>
     </springProfile>
 </configuration>

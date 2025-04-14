@@ -9,3 +9,6 @@ spring:
   sql:
     init:
       mode: always
+
+loki:
+  endpoint: ${LOKI_ENDPOINT}

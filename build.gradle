@@ -85,6 +85,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")
 
+    // Loki4j (for logging with Loki)
+    implementation("com.github.loki4j:loki-logback-appender:1.4.0")
+
     // spring security test
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation 'org.junit.jupiter:junit-jupiter'
