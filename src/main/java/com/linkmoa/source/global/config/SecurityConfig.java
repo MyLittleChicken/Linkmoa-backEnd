@@ -1,6 +1,5 @@
 package com.linkmoa.source.global.config;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
@@ -65,16 +64,14 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(Arrays.asList(
-			"http://localhost:3000",
-			"http://localhost:5173",
-			"https://linkmoa-front.vercel.app" // 배포된 프론트엔드 도메인 추가
-		));
-		config.setAllowedMethods(Arrays.asList("*"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setExposedHeaders(Collections.singletonList("Authorization"));
-		config.setAllowCredentials(true);
-		config.setMaxAge(3600L); //1시간
+		config.setAllowedOriginPatterns(Collections.singletonList("*")); // 모든 origin 허용
+		config.setAllowedMethods(Collections.singletonList("*"));        // 모든 HTTP 메서드 허용
+		config.setAllowedHeaders(Collections.singletonList("*"));        // 모든 헤더 허용
+		config.setExposedHeaders(Collections.singletonList("Authorization")); // Authorization 헤더 노출
+		config.setAllowCredentials(
+			true);                                 // 자격증명 허용 (주의: allowedOriginPatterns가 "*"일 경우 보안상 위험)
+		config.setMaxAge(3600L); // 캐싱 시간 설정
+
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);
 
