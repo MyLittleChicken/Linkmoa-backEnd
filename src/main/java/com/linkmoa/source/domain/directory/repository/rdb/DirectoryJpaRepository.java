@@ -23,6 +23,6 @@ public interface DirectoryJpaRepository extends JpaRepository<Directory, Long> {
 			""",
 		nativeQuery = true
 	)
-	String findFullPathByDirectoryId(@Param("currentDirectoryId") Long currentDirectoryId);
+	String findFullPathByDirectoryId(@Param("currentDirectoryId") Long directoryId);
 
 }

@@ -40,5 +40,5 @@ public interface DirectoryDataAccess {
 
 	List<DirectorySimpleResponse> findFavoriteDirectories(List<Long> favoriteDirectoryIds);
 
-	String findFullPathByDirectoryId(Long currentDirectoryId);
+	String findFullPathByDirectoryId(Long directoryId);
 }
