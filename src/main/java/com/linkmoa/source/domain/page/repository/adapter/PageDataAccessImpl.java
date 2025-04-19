@@ -54,4 +54,9 @@ public class PageDataAccessImpl implements PageDataAccess {
 	public Long findRootDirectoryIdByPageId(Long pageId) {
 		return pageQueryDslRepository.findRootDirectoryIdByPageId(pageId);
 	}
+
+	@Override
+	public String findPageTitleById(Long pageId) {
+		return pageJpaRepository.findPageTitleById(pageId);
+	}
 }
