@@ -1,6 +1,6 @@
 spring:
   application:
-    name: linkmoa-service
+    name: linkrew-service
 
   security:
     oauth2:
