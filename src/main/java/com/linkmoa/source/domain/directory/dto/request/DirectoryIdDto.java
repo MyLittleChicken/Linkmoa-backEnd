@@ -23,7 +23,8 @@ public class DirectoryIdDto {
 		List<DirectoryDetailResponse> directoryDetailResponses,
 		List<SiteDetailResponse> siteDetailResponses,
 		String targetDirectoryName,
-		String targetDirectoryDescription
+		String targetDirectoryDescription,
+		String directoryFullPath
 	) {
 
 	}
