@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ public class MemberService {
 	private final RefreshTokenService refreshTokenService;
 	private final NotificationService notifyService;
 	private final MemberPageLinkService memberPageLinkService;
+	@Value("${frontend.base-url}")
+	private String frontendBaseUrl;
 
 	public Member saveOrUpdate(Member member) {
 		Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
@@ -65,10 +68,10 @@ public class MemberService {
 		Member member = findMemberByEmail(email);
 
 		if (member.getGender() == null || member.getJob() == null || member.getAgeRange() == null) {
-			return "http://localhost:3000/signup";
+			return frontendBaseUrl + "/signup";
 		}
 
-		return "http://localhost:3000/mainpage";
+		return frontendBaseUrl + "/";
 	}
 
 	public void memberSignUp(MemberSignUpRequest memberSignUpRequest, PrincipalDetails principalDetails) {
