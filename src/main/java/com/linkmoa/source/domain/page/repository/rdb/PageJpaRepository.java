@@ -40,4 +40,7 @@ public interface PageJpaRepository extends JpaRepository<Page, Long> {
 		@Param("name") String name,
 		@Param("rootDirectoryId") Long rootDirectoryId,
 		@Param("memberId") Long memberId);
+
+	@Query("SELECT p.pageTitle FROM Page p WHERE p.id = :pageId")
+	String findPageTitleById(@Param("pageId") Long pageId);
 }

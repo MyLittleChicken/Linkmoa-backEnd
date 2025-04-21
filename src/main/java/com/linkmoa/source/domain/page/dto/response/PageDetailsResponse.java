@@ -13,7 +13,8 @@ public record PageDetailsResponse(
 	String pageTitle,
 	String pageDescription,
 	List<DirectoryDetailResponse> directoryDetailRespons,
-	List<SiteDetailResponse> siteDetailResponses
+	List<SiteDetailResponse> siteDetailResponses,
+	String fullPath
 
 ) {
 

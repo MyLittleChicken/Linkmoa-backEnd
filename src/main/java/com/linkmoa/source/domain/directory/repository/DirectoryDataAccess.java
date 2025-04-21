@@ -39,4 +39,7 @@ public interface DirectoryDataAccess {
 		boolean isIncrement);
 
 	List<DirectorySimpleResponse> findFavoriteDirectories(List<Long> favoriteDirectoryIds);
+
+	String findFullPathByDirectoryId(Long directoryId);
+
 }

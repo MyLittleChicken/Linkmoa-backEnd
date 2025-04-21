@@ -21,4 +21,7 @@ public interface PageDataAccess {
 	List<PageResponse> findAllPagesByMemberId(Long memberId);
 
 	Long findRootDirectoryIdByPageId(Long pageId);
+
+	String findPageTitleById(Long pageId);
+
 }

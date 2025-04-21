@@ -96,4 +96,10 @@ public class DirectoryDataAccessImpl implements DirectoryDataAccess {
 	public List<DirectorySimpleResponse> findFavoriteDirectories(List<Long> favoriteDirectoryIds) {
 		return directoryQueryDslRepository.findFavoriteDirectories(favoriteDirectoryIds);
 	}
+
+	@Override
+	public String findFullPathByDirectoryId(Long directoryId) {
+		return directoryJpaRepository.findFullPathByDirectoryId(directoryId);
+	}
+
 }

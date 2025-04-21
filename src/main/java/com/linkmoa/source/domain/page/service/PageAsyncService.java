@@ -48,6 +48,7 @@ public class PageAsyncService {
 				.pageDescription(page.getPageDescription())
 				.directoryDetailRespons(directoryDetails)
 				.siteDetailResponses(sitesDetails)
+				.fullPath(page.getPageTitle())
 				.build();
 			return pageDetailsResponse;
 		});

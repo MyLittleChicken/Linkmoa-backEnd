@@ -1,13 +1,13 @@
 version: '3.8'
 
 services:
-  linkmoa-server:
+  linkrew-server:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         - SPRING_PROFILE=${SPRING_PROFILE}
-    container_name: linkmoa-server
+    container_name: linkrew-server
     env_file:
       - ${ENV_FILE}  # 환경 변수 파일 설정
     ports:
