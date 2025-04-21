@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
@@ -26,13 +27,14 @@ public class PageAsyncService {
 	public CompletableFuture<List<DirectoryDetailResponse>> findDirectoryDetailsAsync(Long directoryId,
 		List<Long> favoriteDirectoryIds) {
 		return CompletableFuture.completedFuture(
-			directoryDataAccess.findDirectoryDetails(directoryId, favoriteDirectoryIds));
+			directoryDataAccess.findDirectoryDetails(directoryId, favoriteDirectoryIds, SortType.BASIC));
 	}
 
 	@Async("threadPoolTaskExecutor")
 	public CompletableFuture<List<SiteDetailResponse>> findSitesDetailsAsync(Long directoryId,
 		List<Long> favoriteSiteIds) {
-		return CompletableFuture.completedFuture(siteDataAccess.findSitesDetails(directoryId, favoriteSiteIds));
+		return CompletableFuture.completedFuture(
+			siteDataAccess.findSitesDetails(directoryId, favoriteSiteIds, SortType.BASIC));
 	}
 
 	public CompletableFuture<PageDetailsResponse> combinePageDetails(

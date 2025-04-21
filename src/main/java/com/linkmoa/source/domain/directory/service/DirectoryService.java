@@ -213,10 +213,10 @@ public class DirectoryService {
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);
 
 		List<DirectoryDetailResponse> directoryDetailResponses =
-			directoryDataAccess.findDirectoryDetails(targetDirectory.getId(), favoriteDirectoryIds);
+			directoryDataAccess.findDirectoryDetails(targetDirectory.getId(), favoriteDirectoryIds, request.sortType());
 
 		List<SiteDetailResponse> siteDetailResponses =
-			siteDataAccess.findSitesDetails(targetDirectory.getId(), favoriteSiteIds);
+			siteDataAccess.findSitesDetails(targetDirectory.getId(), favoriteSiteIds, request.sortType());
 
 		return DirectoryIdDto.Response.builder()
 			.targetDirectoryDescription(targetDirectory.getDirectoryDescription())

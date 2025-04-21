@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.domain.site.dto.response.SiteSimpleResponse;
 import com.linkmoa.source.domain.site.entity.Site;
@@ -37,8 +38,8 @@ public class SiteDataAccessImpl implements SiteDataAccess {
 	}
 
 	@Override
-	public List<SiteDetailResponse> findSitesDetails(Long directoryId, List<Long> favoriteSiteIds) {
-		return siteQueryDslRepository.findSitesDetails(directoryId, favoriteSiteIds);
+	public List<SiteDetailResponse> findSitesDetails(Long directoryId, List<Long> favoriteSiteIds, SortType sortType) {
+		return siteQueryDslRepository.findSitesDetails(directoryId, favoriteSiteIds, sortType);
 	}
 
 	@Override

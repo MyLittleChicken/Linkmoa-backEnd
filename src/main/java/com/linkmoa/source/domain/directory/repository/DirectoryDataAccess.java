@@ -3,6 +3,7 @@ package com.linkmoa.source.domain.directory.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
 import com.linkmoa.source.domain.directory.entity.Directory;
@@ -15,7 +16,8 @@ public interface DirectoryDataAccess {
 
 	void delete(Directory directory);
 
-	List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds);
+	List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds,
+		SortType sortType);
 
 	void decrementDirectoryOrderIndexes(Directory parentDirectory, Integer orderIndex);
 

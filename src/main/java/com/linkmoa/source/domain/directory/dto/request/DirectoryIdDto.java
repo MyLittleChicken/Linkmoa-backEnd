@@ -2,6 +2,7 @@ package com.linkmoa.source.domain.directory.dto.request;
 
 import java.util.List;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.global.dto.request.BaseRequest;
@@ -13,7 +14,8 @@ public class DirectoryIdDto {
 
 	public record Request(
 		BaseRequest baseRequest,
-		@NotNull Long directoryId
+		@NotNull Long directoryId,
+		SortType sortType
 	) {
 
 	}
