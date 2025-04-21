@@ -77,7 +77,7 @@ public class MemberService {
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
 
 		member.updateSignUpMember(memberSignUpRequest.ageRange(), memberSignUpRequest.gender(),
-			memberSignUpRequest.job(), memberSignUpRequest.nickName());
+			memberSignUpRequest.job(), memberSignUpRequest.nickName(), memberSignUpRequest.colorCode());
 		memberRepository.save(member);
 
 	}

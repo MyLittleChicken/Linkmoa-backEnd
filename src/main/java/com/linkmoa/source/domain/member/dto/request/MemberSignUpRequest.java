@@ -13,6 +13,8 @@ public record MemberSignUpRequest(
 	@NotNull @Size(max = 100, message = "Job은 최대 100자까지 가능합니다.")
 	String job,
 	@NotNull
-	String nickName
+	String nickName,
+
+	String colorCode
 ) {
 }
