@@ -69,12 +69,16 @@ public class Member extends BaseEntity {
 	)
 	private List<MemberPageLink> memberPageLinks = new ArrayList<>();
 
+	@Column(name = "color_code", length = 10)
+	private String colorCode;
+
 	@Builder
-	public Member(String email, Role role, String provider, String providerId) {
+	public Member(String email, Role role, String provider, String providerId, String colorCode) {
 		this.email = email;
 		this.role = role;
 		this.provider = provider;
 		this.providerId = providerId;
+		this.colorCode = colorCode;
 	}
 
 	public void updateMember(Member member) {
@@ -91,10 +95,11 @@ public class Member extends BaseEntity {
 		}
 	}
 
-	public void updateSignUpMember(String ageRange, Gender gender, String job, String nickname) {
+	public void updateSignUpMember(String ageRange, Gender gender, String job, String nickname, String colorCode) {
 		this.ageRange = ageRange;
 		this.gender = gender;
 		this.job = job;
 		this.nickname = nickname;
+		this.colorCode = colorCode;
 	}
 }

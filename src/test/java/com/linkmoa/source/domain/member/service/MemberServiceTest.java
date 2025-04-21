@@ -51,7 +51,7 @@ class MemberServiceTest {
 
 		// given
 		MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest
-			("20-30", Gender.MALE, "student", "park");
+			("20-30", Gender.MALE, "student", "park", "color");
 
 		when(memberRepository.findByEmail(principalDetails.getEmail())).thenReturn(Optional.of(member));
 
