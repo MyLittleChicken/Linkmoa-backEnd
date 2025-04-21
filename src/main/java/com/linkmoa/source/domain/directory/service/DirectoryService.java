@@ -223,7 +223,7 @@ public class DirectoryService {
 			.targetDirectoryName(targetDirectory.getDirectoryName())
 			.directoryDetailResponses(directoryDetailResponses)
 			.siteDetailResponses(siteDetailResponses)
-			.directoryFullPath(findFullPath(targetDirectory.getId(), request.baseRequest().pageId()))
+			.fullPath(findFullPath(targetDirectory.getId(), request.baseRequest().pageId()))
 			.build();
 	}
 
