@@ -223,11 +223,11 @@ public class DirectoryService {
 			.targetDirectoryName(targetDirectory.getDirectoryName())
 			.directoryDetailResponses(directoryDetailResponses)
 			.siteDetailResponses(siteDetailResponses)
-			.directoryFullPath(findDirectoryFullPath(targetDirectory.getId(), request.baseRequest().pageId()))
+			.directoryFullPath(findFullPath(targetDirectory.getId(), request.baseRequest().pageId()))
 			.build();
 	}
 
-	private String findDirectoryFullPath(Long directoryId, Long pageId) {
+	private String findFullPath(Long directoryId, Long pageId) {
 		String directoryFullPath = directoryDataAccess.findFullPathByDirectoryId(directoryId);
 		String pageTitle = pageDataAccess.findPageTitleById(pageId);
 		return pageTitle + "/" + directoryFullPath;
