@@ -101,4 +101,5 @@ public class DirectoryDataAccessImpl implements DirectoryDataAccess {
 	public String findFullPathByDirectoryId(Long directoryId) {
 		return directoryJpaRepository.findFullPathByDirectoryId(directoryId);
 	}
+
 }

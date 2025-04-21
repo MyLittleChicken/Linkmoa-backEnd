@@ -21,6 +21,7 @@ import com.linkmoa.source.domain.favorite.constant.ItemType;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
 import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
+import com.linkmoa.source.domain.page.repository.PageDataAccess;
 import com.linkmoa.source.domain.site.dto.response.SiteDetailResponse;
 import com.linkmoa.source.domain.site.entity.Site;
 import com.linkmoa.source.domain.site.error.SiteErrorCode;
@@ -40,6 +41,7 @@ public class DirectoryService {
 	private final SiteDataAccess siteDataAccess;
 	private final FavoriteDataAccess favoriteDataAccess;
 	private final FavoriteService favoriteService;
+	private final PageDataAccess pageDataAccess;
 
 	@Transactional
 	@ValidationApplied
@@ -221,7 +223,15 @@ public class DirectoryService {
 			.targetDirectoryName(targetDirectory.getDirectoryName())
 			.directoryDetailResponses(directoryDetailResponses)
 			.siteDetailResponses(siteDetailResponses)
+			.directoryFullPath(findDirectoryFullPath(targetDirectory.getId(), request.baseRequest().pageId()))
 			.build();
+	}
+
+	private String findDirectoryFullPath(Long directoryId, Long pageId) {
+		String directoryFullPath = directoryDataAccess.findFullPathByDirectoryId(directoryId);
+		String pageTitle = pageDataAccess.findPageTitleById(pageId);
+		return pageTitle + "/" + directoryFullPath;
+
 	}
 
 	@Transactional
