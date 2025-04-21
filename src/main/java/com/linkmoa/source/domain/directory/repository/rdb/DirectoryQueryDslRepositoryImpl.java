@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.favorite.constant.ItemType;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,18 +27,25 @@ import lombok.RequiredArgsConstructor;
 public class DirectoryQueryDslRepositoryImpl {
 	private final JPAQueryFactory jpaQueryFactory;
 
-	public List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds) {
+	public List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds,
+		SortType sortType) {
+
+		OrderSpecifier<?> orderSpecifier = switch (sortType) {
+			case NAME -> directory.directoryName.asc();
+			case DATE -> directory.createdAt.desc();
+			case BASIC -> directory.orderIndex.asc();
+		};
 
 		return jpaQueryFactory
 			.selectFrom(directory)
 			.where(directory.parentDirectory.id.eq(directoryId))
-			.orderBy(directory.orderIndex.asc())
+			.orderBy(orderSpecifier)
 			.fetch()
 			.stream()
 			.map(d -> DirectoryDetailResponse.builder()
 				.directoryId(d.getId())
 				.directoryName(d.getDirectoryName())
-				.orderIndex(d.getOrderIndex())
+				.orderIndex(sortType == SortType.BASIC ? d.getOrderIndex() : null)
 				.isFavorite(favoriteDirectoryIds.contains(d.getId()))
 				.build())
 			.collect(Collectors.toList());

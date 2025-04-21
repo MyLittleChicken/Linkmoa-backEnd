@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.response.DirectoryDetailResponse;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
 import com.linkmoa.source.domain.directory.entity.Directory;
@@ -37,8 +38,9 @@ public class DirectoryDataAccessImpl implements DirectoryDataAccess {
 	}
 
 	@Override
-	public List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds) {
-		return directoryQueryDslRepository.findDirectoryDetails(directoryId, favoriteDirectoryIds);
+	public List<DirectoryDetailResponse> findDirectoryDetails(Long directoryId, List<Long> favoriteDirectoryIds,
+		SortType sortType) {
+		return directoryQueryDslRepository.findDirectoryDetails(directoryId, favoriteDirectoryIds, sortType);
 	}
 
 	@Override
