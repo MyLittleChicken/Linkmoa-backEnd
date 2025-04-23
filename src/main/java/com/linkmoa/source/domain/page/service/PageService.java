@@ -2,6 +2,7 @@ package com.linkmoa.source.domain.page.service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,9 @@ import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
 import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
+import com.linkmoa.source.domain.page.dto.request.PageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
+import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
@@ -244,6 +247,23 @@ public class PageService {
 	public Page getPersonalPage(Long memberId) {
 		return memberPageLinkDataAccess.findPersonalPageByMemberId(memberId)
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
+	}
+
+	@ValidationApplied
+	public PageDashboardDto.Response getPageDashboard(PageDashboardDto.Request request) {
+
+		List<PageDashboardMemberDto> allMembers = Stream.concat(
+			pageDataAccess.findDashboardMembersByPageId(
+				request.baseRequest().pageId()).stream(),
+			pageDataAccess.findWaitingInvitedMembersByPageId(
+				request.baseRequest().pageId()).stream()
+		).toList();
+
+		return PageDashboardDto.Response.builder()
+			.pageId(request.baseRequest().pageId())
+			.visibility(pageDataAccess.findPageVisibilityByPageId(request.baseRequest().pageId()))
+			.pageMembers(allMembers)
+			.build();
 	}
 
 }
