@@ -3,6 +3,7 @@ package com.linkmoa.source.domain.page.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.entity.Page;
 
@@ -23,5 +24,9 @@ public interface PageDataAccess {
 	Long findRootDirectoryIdByPageId(Long pageId);
 
 	String findPageTitleById(Long pageId);
+
+	List<PageDashboardMemberDto> findDashboardMembersByPageId(Long pageId);
+
+	List<PageDashboardMemberDto> findWaitingInvitedMembersByPageId(Long pageId);
 
 }
