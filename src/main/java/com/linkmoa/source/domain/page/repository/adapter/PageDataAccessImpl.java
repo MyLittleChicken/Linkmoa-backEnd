@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.page.contant.PageVisibility;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.entity.Page;
@@ -69,5 +70,10 @@ public class PageDataAccessImpl implements PageDataAccess {
 	@Override
 	public List<PageDashboardMemberDto> findWaitingInvitedMembersByPageId(Long pageId) {
 		return pageQueryDslRepository.findWaitingInvitedMembersByPageId(pageId);
+	}
+
+	@Override
+	public PageVisibility findPageVisibilityByPageId(Long pageId) {
+		return pageQueryDslRepository.findPageVisibilityByPageId(pageId);
 	}
 }

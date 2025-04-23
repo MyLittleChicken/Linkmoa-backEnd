@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
+import com.linkmoa.source.domain.page.contant.PageVisibility;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.querydsl.core.types.Projections;
@@ -86,4 +87,13 @@ public class PageQueryDslRepositoryImpl {
 			)
 			.fetch();
 	}
+
+	public PageVisibility findPageVisibilityByPageId(Long pageId) {
+		return jpaQueryFactory
+			.select(page.visibility)
+			.from(page)
+			.where(page.id.eq(pageId))
+			.fetchOne();
+	}
+
 }

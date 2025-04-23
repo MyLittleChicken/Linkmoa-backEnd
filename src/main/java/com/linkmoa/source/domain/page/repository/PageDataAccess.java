@@ -3,6 +3,7 @@ package com.linkmoa.source.domain.page.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.linkmoa.source.domain.page.contant.PageVisibility;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.entity.Page;
@@ -29,4 +30,5 @@ public interface PageDataAccess {
 
 	List<PageDashboardMemberDto> findWaitingInvitedMembersByPageId(Long pageId);
 
+	PageVisibility findPageVisibilityByPageId(Long pageId);
 }
