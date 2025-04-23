@@ -77,7 +77,7 @@ public class PageQueryDslRepositoryImpl {
 				sharePageInvitationRequest.receiver.id,
 				sharePageInvitationRequest.receiver.email,
 				sharePageInvitationRequest.receiver.nickname,
-				Expressions.constant(null),
+				Expressions.constant("UNKNOWN"),
 				Expressions.constant(true)
 			))
 			.from(sharePageInvitationRequest)
