@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
 import com.linkmoa.source.domain.page.contant.PageType;
+import com.linkmoa.source.domain.page.contant.PageVisibility;
 import com.linkmoa.source.global.entity.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -58,6 +59,10 @@ public class Page extends BaseEntity {
 	)
 	@JoinColumn(name = "root_directory_id", unique = true) // rootDirectory와 1:1 매핑
 	private Directory rootDirectory;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "visibility", nullable = false)
+	private PageVisibility visibility = PageVisibility.RESTRICTED;
 
 	@Builder
 	public Page(String pageTitle, String pageDescription, PageType pageType, Directory rootDirectory) {
