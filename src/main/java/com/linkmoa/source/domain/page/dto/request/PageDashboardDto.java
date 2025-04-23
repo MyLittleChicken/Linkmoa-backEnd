@@ -17,7 +17,6 @@ public class PageDashboardDto {
 	@Builder
 	public record Response(
 		Long pageId,
-		String pageTitle,
 		Boolean isPublic,
 		List<PageDashboardMemberDto> pageMembers
 	) {
