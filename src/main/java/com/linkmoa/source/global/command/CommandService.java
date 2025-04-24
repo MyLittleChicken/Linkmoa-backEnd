@@ -23,13 +23,15 @@ public class CommandService {
 		permissionToCommandsMap.put(PermissionType.ADMIN, Set.of(
 			CommandType.VIEW, CommandType.EDIT, CommandType.CREATE, CommandType.SHARED_PAGE_LEAVE,
 			CommandType.DIRECTORY_TRANSMISSION, CommandType.SHARED_PAGE_INVITATION,
-			CommandType.SHARED_PAGE_DELETION, CommandType.SHARED_PAGE_USER_REMOVAL
+			CommandType.SHARED_PAGE_DELETION, CommandType.SHARED_PAGE_USER_REMOVAL,
+			CommandType.SHARED_PAGE_PERMISSION_CHANGE
 		));
 
 		permissionToCommandsMap.put(PermissionType.HOST, Set.of(
 			CommandType.VIEW, CommandType.EDIT, CommandType.CREATE,
 			CommandType.DIRECTORY_TRANSMISSION, CommandType.SHARED_PAGE_INVITATION,
-			CommandType.SHARED_PAGE_DELETION, CommandType.SHARED_PAGE_USER_REMOVAL
+			CommandType.SHARED_PAGE_DELETION, CommandType.SHARED_PAGE_USER_REMOVAL,
+			CommandType.SHARED_PAGE_PERMISSION_CHANGE
 		));
 
 		permissionToCommandsMap.put(PermissionType.EDITOR, Set.of(
