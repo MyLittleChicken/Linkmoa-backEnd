@@ -266,4 +266,10 @@ public class PageService {
 			.build();
 	}
 
+/*	@ValidationApplied
+	public SharePageDashboardPermissionUpdateDto.Request updateSharePagePermission(
+		SharePageDashboardPermissionUpdateDto.Request request, PrincipalDetails principalDetails) {
+
+	}*/
+
 }
