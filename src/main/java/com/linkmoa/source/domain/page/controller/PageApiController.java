@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
-import com.linkmoa.source.domain.page.dto.request.PageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
@@ -116,8 +116,8 @@ public class PageApiController {
 
 	@GetMapping("/dashboard")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiResponseSpec<PageDashboardDto.Response>> getPageDashboard(
-		@RequestBody PageDashboardDto.Request request,
+	public ResponseEntity<ApiResponseSpec<SharePageDashboardDto.Response>> getPageDashboard(
+		@RequestBody SharePageDashboardDto.Request request,
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(

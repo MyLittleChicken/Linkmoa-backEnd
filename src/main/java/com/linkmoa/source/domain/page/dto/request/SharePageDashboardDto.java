@@ -8,7 +8,7 @@ import com.linkmoa.source.global.dto.request.BaseRequest;
 
 import lombok.Builder;
 
-public class PageDashboardDto {
+public class SharePageDashboardDto {
 	public record Request(
 		BaseRequest baseRequest
 	) {

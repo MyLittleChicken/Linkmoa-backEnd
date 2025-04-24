@@ -22,8 +22,8 @@ import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
 import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
-import com.linkmoa.source.domain.page.dto.request.PageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
@@ -250,7 +250,7 @@ public class PageService {
 	}
 
 	@ValidationApplied
-	public PageDashboardDto.Response getPageDashboard(PageDashboardDto.Request request) {
+	public SharePageDashboardDto.Response getPageDashboard(SharePageDashboardDto.Request request) {
 
 		List<PageDashboardMemberDto> allMembers = Stream.concat(
 			pageDataAccess.findDashboardMembersByPageId(
@@ -259,7 +259,7 @@ public class PageService {
 				request.baseRequest().pageId()).stream()
 		).toList();
 
-		return PageDashboardDto.Response.builder()
+		return SharePageDashboardDto.Response.builder()
 			.pageId(request.baseRequest().pageId())
 			.visibility(pageDataAccess.findPageVisibilityByPageId(request.baseRequest().pageId()))
 			.pageMembers(allMembers)
