@@ -285,7 +285,8 @@ public class PageService {
 		String message;
 		switch (request.baseRequest().commandType()) {
 			case SHARED_PAGE_USER_REMOVAL -> {
-				memberPageLinkDataAccess.deleteByMemberId(targetMember.getId());
+				memberPageLinkDataAccess.deleteByMemberIdAndPageId(targetMember.getId(),
+					request.baseRequest().pageId());
 				message = targetMember.getEmail() + "님이 페이지에서 제외되었습니다.";
 			}
 			case SHARED_PAGE_PERMISSION_CHANGE -> {
