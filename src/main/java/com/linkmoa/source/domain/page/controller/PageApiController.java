@@ -10,14 +10,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
-import com.linkmoa.source.domain.page.dto.request.PageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardPermissionUpdateDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
@@ -116,8 +118,8 @@ public class PageApiController {
 
 	@GetMapping("/dashboard")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiResponseSpec<PageDashboardDto.Response>> getPageDashboard(
-		@RequestBody PageDashboardDto.Request request,
+	public ResponseEntity<ApiResponseSpec<SharePageDashboardDto.Response>> getPageDashboard(
+		@RequestBody SharePageDashboardDto.Request request,
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
@@ -128,4 +130,16 @@ public class PageApiController {
 		));
 	}
 
+	@PutMapping("/dashboard")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<ApiResponseSpec<SharePageDashboardPermissionUpdateDto.Response>> updateSharePagePermission(
+		@RequestBody SharePageDashboardPermissionUpdateDto.Request request,
+		@AuthenticationPrincipal PrincipalDetails principalDetails
+	) {
+		return ResponseEntity.ok().body(ApiResponseSpec.success(
+			HttpStatus.OK,
+			"공유 페이지 멤버 권한을 수정했습니다.",
+			pageService.updateSharePagePermission(request, principalDetails)
+		));
+	}
 }

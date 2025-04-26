@@ -19,11 +19,14 @@ import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
+import com.linkmoa.source.domain.memberPageLink.error.MemberPageLinkErrorCode;
+import com.linkmoa.source.domain.memberPageLink.exception.MemberPageLinkException;
 import com.linkmoa.source.domain.memberPageLink.repository.MemberPageLinkDataAccess;
 import com.linkmoa.source.domain.page.contant.PageType;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
-import com.linkmoa.source.domain.page.dto.request.PageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageDashboardPermissionUpdateDto;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
@@ -250,7 +253,7 @@ public class PageService {
 	}
 
 	@ValidationApplied
-	public PageDashboardDto.Response getPageDashboard(PageDashboardDto.Request request) {
+	public SharePageDashboardDto.Response getPageDashboard(SharePageDashboardDto.Request request) {
 
 		List<PageDashboardMemberDto> allMembers = Stream.concat(
 			pageDataAccess.findDashboardMembersByPageId(
@@ -259,10 +262,48 @@ public class PageService {
 				request.baseRequest().pageId()).stream()
 		).toList();
 
-		return PageDashboardDto.Response.builder()
+		return SharePageDashboardDto.Response.builder()
 			.pageId(request.baseRequest().pageId())
 			.visibility(pageDataAccess.findPageVisibilityByPageId(request.baseRequest().pageId()))
 			.pageMembers(allMembers)
+			.build();
+	}
+
+	@Transactional
+	@ValidationApplied
+	public SharePageDashboardPermissionUpdateDto.Response updateSharePagePermission(
+		SharePageDashboardPermissionUpdateDto.Request request, PrincipalDetails principalDetails) {
+		Member targetMember = memberService.findMemberById(request.targetMemberId());
+
+		PermissionType targetMemberPermissionType = memberPageLinkDataAccess.findPermissionTypeByMemberIdAndPageId(
+			targetMember.getId(),
+			request.baseRequest().pageId());
+
+		if (targetMemberPermissionType.equals(PermissionType.HOST)) {
+			throw new PageException(PageErrorCode.CANNOT_UPDATE_HOST_PERMISSION);
+		}
+		String message;
+		switch (request.baseRequest().commandType()) {
+			case SHARED_PAGE_USER_REMOVAL -> {
+				memberPageLinkDataAccess.deleteByMemberIdAndPageId(targetMember.getId(),
+					request.baseRequest().pageId());
+				message = targetMember.getEmail() + "님이 페이지에서 제외되었습니다.";
+			}
+			case SHARED_PAGE_PERMISSION_CHANGE -> {
+				MemberPageLink memberPageLink = memberPageLinkDataAccess.findByMemberAndPage(
+						targetMember.getId(), request.baseRequest().pageId())
+					.orElseThrow(() -> new MemberPageLinkException(MemberPageLinkErrorCode.MEMBER_PAGE_LINK_NOT_FOUND));
+				memberPageLink.updatePermissionType(request.permissionType());
+				message = targetMember.getEmail() + "님의 권한이 변경되었습니다.";
+			}
+			default ->
+				throw new IllegalArgumentException("지원하지 않는 CommandType입니다: " + request.baseRequest().commandType());
+		}
+
+		return SharePageDashboardPermissionUpdateDto.Response.builder()
+			.targetMemberId(request.targetMemberId())
+			.targetMemberEmail(targetMember.getEmail())
+			.message(message)
 			.build();
 	}
 

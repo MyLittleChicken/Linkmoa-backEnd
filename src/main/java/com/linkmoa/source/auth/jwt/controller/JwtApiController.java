@@ -42,7 +42,7 @@ public class JwtApiController {
 			log.info("Extracted Email: {}", email);
 
 			Member member = memberRepository.findByEmail(email)
-				.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+				.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 			// Access Token 생성
 			String accessToken = jwtService.createAccessToken(member.getEmail(), String.valueOf(member.getRole()));

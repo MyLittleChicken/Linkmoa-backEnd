@@ -52,10 +52,15 @@ public class MemberService {
 		}
 	}
 
+	public Member findMemberById(Long id) {
+		return memberRepository.findById(id)
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+	}
+
 	public Member findMemberByEmail(String email) {
 
 		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		return member;
 	}
@@ -77,7 +82,7 @@ public class MemberService {
 	public void memberSignUp(MemberSignUpRequest memberSignUpRequest, PrincipalDetails principalDetails) {
 
 		Member member = memberRepository.findByEmail(principalDetails.getEmail())
-			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		member.updateSignUpMember(memberSignUpRequest.ageRange(), memberSignUpRequest.gender(),
 			memberSignUpRequest.job(), memberSignUpRequest.nickName(), memberSignUpRequest.colorCode());
@@ -87,13 +92,13 @@ public class MemberService {
 
 	public void memberLogout(PrincipalDetails principalDetails) {
 		Member member = memberRepository.findByEmail(principalDetails.getEmail())
-			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 		refreshTokenService.deleteRefreshToken(member.getEmail());
 	}
 
 	public ApiResponseSpec<List<PageResponse>> processMemberDeletion(PrincipalDetails principalDetails) {
 		Member member = memberRepository.findByEmail(principalDetails.getEmail())
-			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		List<Page> pagesWithUniqueHost = memberPageLinkService.PagesWithUniqueHostByMember(member.getId());
 
@@ -117,7 +122,7 @@ public class MemberService {
 	@Transactional
 	public void memberDelete(PrincipalDetails principalDetails) {
 		Member member = memberRepository.findByEmail(principalDetails.getEmail())
-			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		String memberEmail = member.getEmail();
 
