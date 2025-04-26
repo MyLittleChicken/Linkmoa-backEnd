@@ -58,7 +58,7 @@ public class DispatchRequestService {
 		PrincipalDetails principalDetails) {
 
 		if (!memberService.isMemberExist(request.receiverEmail())) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL);
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
 		}
 
 		DirectoryTransmissionRequest existingRequest = directoryTransmissionRequestDataAccess
@@ -107,7 +107,7 @@ public class DispatchRequestService {
 		SharePageInvitationRequestDto.Request request, PrincipalDetails principalDetails) {
 
 		if (!memberService.isMemberExist(request.receiverEmail())) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL); // 유저가 없으면 예외 발생
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND); // 유저가 없으면 예외 발생
 		}
 
 		Page page = pageDataAccess.findById(request.baseRequest().pageId())

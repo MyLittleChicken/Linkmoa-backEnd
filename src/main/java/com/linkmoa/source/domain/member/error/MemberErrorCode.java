@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum MemberErrorCode implements ErrorCode {
 
-	MEMBER_NOT_FOUND_EMAIL(HttpStatus.NOT_FOUND, "Member email을 찾지 못했습니다"),
+	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Member를 찾지 못했습니다"),
 	MEMBER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 email입니다.");
 
 	private HttpStatus httpStatus;
