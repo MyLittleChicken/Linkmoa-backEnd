@@ -25,6 +25,32 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		try {
+			log.info("🔥🔥🔥 loadUser 호출됨 - provider: {}", userRequest.getClientRegistration().getRegistrationId());
+
+			OAuth2User oAuth2User = super.loadUser(userRequest);
+
+			log.info("✅ Attributes: {}", oAuth2User.getAttributes());
+
+			String provider = userRequest.getClientRegistration().getRegistrationId();
+			OAuth2UserInfo oAuth2UserInfo = toOAuth2UserInfo(provider, oAuth2User);
+
+			Member member = memberService.saveOrUpdate(Member.builder()
+				.email(oAuth2UserInfo.getEmail())
+				.role(Role.USER)
+				.provider(provider)
+				.providerId(oAuth2UserInfo.getProviderId())
+				.build());
+
+			return new PrincipalDetails(member, oAuth2User.getAttributes());
+		} catch (Exception e) {
+			log.error("❌ loadUser 실패 - 예외 발생: {}", e.getMessage(), e);
+			throw new OAuth2AuthenticationException(String.valueOf("OAuth2 인증 중 오류 발생" + e));
+		}
+	}
+
+/*	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -41,7 +67,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
 		PrincipalDetails principalDetails = new PrincipalDetails(member, oAuth2User.getAttributes());
 		return principalDetails; // => DefaultOAuth2UserService의 메소드인 loadUser의 반환값은
-	}
+	}*/
 
 	// 서비스에 따라 OAuth2UserInfo 객체 생성 메서드
 	private static OAuth2UserInfo toOAuth2UserInfo(String provider, OAuth2User oAuth2User) {

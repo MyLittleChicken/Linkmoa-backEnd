@@ -20,10 +20,12 @@ import com.linkmoa.source.auth.oauth2.handler.CustomOauth2SuccessHandler;
 import com.linkmoa.source.auth.oauth2.service.CustomOauth2UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
 	private final CustomOauth2UserService customOauth2UserService;
@@ -53,11 +55,15 @@ public class SecurityConfig {
 				.oauth2Login((oauth2) -> oauth2
 					.userInfoEndpoint(
 						userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOauth2UserService))
-					.successHandler(customOauth2SuccessHandler))
+					.successHandler(customOauth2SuccessHandler)
+					.failureHandler((request, response, exception) -> {
+						log.error("🔴 OAuth2 로그인 실패: {}", exception.getMessage(), exception);
+						response.sendRedirect("/login?error");
+					}))
 				//.addFilterAfter(customJsonUserPasswordAuthenticationFilter(), LogoutFilter.class)
 				.addFilterBefore(jwtAuthorizationFilter, LogoutFilter.class)
 				//.addFilterBefore(jwtExceptionHandlerFilter, JwtAuthorizationFilter.class)
-				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 				.build();
 	}
 
