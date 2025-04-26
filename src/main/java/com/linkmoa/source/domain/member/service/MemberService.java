@@ -52,6 +52,11 @@ public class MemberService {
 		}
 	}
 
+	public Member findMemberById(Long id) {
+		return memberRepository.findById(id)
+			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_EMAIL));
+	}
+
 	public Member findMemberByEmail(String email) {
 
 		Member member = memberRepository.findByEmail(email)
