@@ -6,12 +6,14 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
 import com.linkmoa.source.auth.jwt.provider.JwtCookieManager;
 import com.linkmoa.source.auth.jwt.refresh.service.RefreshTokenService;
 import com.linkmoa.source.auth.jwt.service.JwtService;
+import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,9 +66,12 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 		String email;
 		Collection<? extends GrantedAuthority> authorities;
 
-		if (principal instanceof org.springframework.security.oauth2.core.oidc.user.OidcUser oidcUser) {
-			email = oidcUser.getEmail(); // OIDC에서는 getEmail() 바로 가능
+		if (principal instanceof OidcUser oidcUser) {
+			email = oidcUser.getEmail();
 			authorities = oidcUser.getAuthorities();
+		} else if (principal instanceof PrincipalDetails principalDetails) {
+			email = principalDetails.getEmail();
+			authorities = principalDetails.getAuthorities();
 		} else {
 			throw new IllegalStateException("OAuth2 로그인 실패: 예상치 못한 principal 타입 " + principal.getClass().getName());
 		}
@@ -84,9 +89,9 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 		response.addCookie(jwtCookieManager.createCookie("refresh_token", refreshToken, 14 * 24 * 60 * 60));
 		response.setHeader("Authorization", "Bearer " + accessToken);
 
-		log.info("✅ OAuth2 로그인 성공! AccessToken: {}", accessToken);
-		log.info("✅ OAuth2 로그인 성공! 이메일: {}", email);
-		log.info("✅ OAuth2 로그인 성공! RefreshToken: {}", refreshToken);
+		log.info("OAuth2 로그인 성공! AccessToken: {}", accessToken);
+		log.info("OAuth2 로그인 성공! 이메일: {}", email);
+		log.info("OAuth2 로그인 성공! RefreshToken: {}", refreshToken);
 	}
 
 }
