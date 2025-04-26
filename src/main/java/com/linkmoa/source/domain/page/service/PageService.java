@@ -280,7 +280,7 @@ public class PageService {
 			request.baseRequest().pageId());
 
 		if (targetMemberPermissionType.equals(PermissionType.HOST)) {
-			throw new PageException(PageErrorCode.CANNOT_LEAVE_SHARED_PAGE_SINGLE_HOST);
+			throw new PageException(PageErrorCode.CANNOT_UPDATE_HOST_PERMISSION);
 		}
 		String message;
 		switch (request.baseRequest().commandType()) {
