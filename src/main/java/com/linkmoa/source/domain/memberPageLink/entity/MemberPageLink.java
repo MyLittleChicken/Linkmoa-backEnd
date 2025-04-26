@@ -66,4 +66,8 @@ public class MemberPageLink extends BaseEntity {
 		page.getMemberPageLinks().add(this);
 	}
 
+	public void updatePermissionType(PermissionType newPermissionType) {
+		this.permissionType = newPermissionType;
+	}
+
 }
