@@ -1,9 +1,11 @@
 package com.linkmoa.source.domain.member.repository.adapter;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.member.dto.response.MemberSimpleResponse;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.member.repository.rdb.MemberJpaRepository;
@@ -41,5 +43,10 @@ public class MemberDataAccessImpl implements MemberDataAccess {
 	@Override
 	public Optional<Member> findById(Long id) {
 		return memberJpaRepository.findById(id);
+	}
+
+	@Override
+	public List<MemberSimpleResponse> searchByKeyword(String keyword) {
+		return memberQueryDslRepository.searchByKeyword(keyword);
 	}
 }
