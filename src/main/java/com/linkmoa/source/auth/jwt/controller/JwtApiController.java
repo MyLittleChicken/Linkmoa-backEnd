@@ -12,7 +12,7 @@ import com.linkmoa.source.auth.jwt.service.JwtService;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
-import com.linkmoa.source.domain.member.repository.MemberRepository;
+import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.global.spec.ApiResponseSpec;
 
@@ -27,7 +27,7 @@ public class JwtApiController {
 
 	private final JwtService jwtService;
 	private final MemberService memberService;
-	private final MemberRepository memberRepository;
+	private final MemberDataAccess memberDataAccess;
 	private final RefreshTokenService refreshTokenService;
 
 	@GetMapping("/access-token")
@@ -41,7 +41,7 @@ public class JwtApiController {
 			String email = refreshTokenService.getEmailByRefreshToken(refreshToken);
 			log.info("Extracted Email: {}", email);
 
-			Member member = memberRepository.findByEmail(email)
+			Member member = memberDataAccess.findByEmail(email)
 				.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 			// Access Token 생성
