@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
+import com.linkmoa.source.domain.member.dto.response.MemberSimpleResponse;
+import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.page.repository.PageDataAccess;
+import com.linkmoa.source.domain.search.dto.request.MemberSearchRequestDto;
 import com.linkmoa.source.domain.search.dto.request.SearchRequest;
 import com.linkmoa.source.domain.search.dto.response.SearchPageResponse;
 import com.linkmoa.source.domain.site.dto.response.SiteSimpleResponse;
@@ -23,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchService {
 
 	private final PageDataAccess pageDataAccess;
+	private final MemberDataAccess memberDataAccess;
 
 	public ApiResponseSpec<SearchPageResponse> searchDirectoriesAndSitesByTitleInPage(SearchRequest searchRequest,
 		PrincipalDetails principalDetails) {
@@ -97,4 +101,13 @@ public class SearchService {
 		}
 		return sites;
 	}
+
+	public MemberSearchRequestDto.Response searchMembersByEmailOrNickname(
+		MemberSearchRequestDto.Request request) {
+		List<MemberSimpleResponse> memberSimpleResponses = memberDataAccess.searchByKeyword(request.Keyword());
+
+		return new MemberSearchRequestDto.Response(memberSimpleResponses);
+
+	}
+
 }
