@@ -1,15 +1,13 @@
 package com.linkmoa.source.auth.jwt.service;
 
+import org.springframework.stereotype.Service;
+
 import com.linkmoa.source.auth.jwt.provider.JwtClaimExtractor;
 import com.linkmoa.source.auth.jwt.provider.JwtCookieManager;
 import com.linkmoa.source.auth.jwt.provider.JwtTokenProvider;
-import com.linkmoa.source.domain.member.repository.MemberRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

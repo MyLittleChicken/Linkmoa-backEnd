@@ -16,7 +16,7 @@ import com.linkmoa.source.domain.member.dto.request.MemberSignUpRequest;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
-import com.linkmoa.source.domain.member.repository.MemberRepository;
+import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.memberPageLink.service.MemberPageLinkService;
 import com.linkmoa.source.domain.notification.service.NotificationService;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberService {
 
-	private final MemberRepository memberRepository;
+	private final MemberDataAccess memberDataAccess;
 	private final RefreshTokenService refreshTokenService;
 	private final NotificationService notifyService;
 	private final MemberPageLinkService memberPageLinkService;
@@ -40,33 +40,33 @@ public class MemberService {
 	private String frontendBaseUrl;
 
 	public Member saveOrUpdate(Member member) {
-		Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
+		Optional<Member> optionalMember = memberDataAccess.findByEmail(member.getEmail());
 
 		if (optionalMember.isPresent()) {
 			Member existingMember = optionalMember.get();
 			existingMember.updateMember(member);
 
-			return memberRepository.save(existingMember);
+			return memberDataAccess.save(existingMember);
 		} else {
-			return memberRepository.save(member);
+			return memberDataAccess.save(member);
 		}
 	}
 
 	public Member findMemberById(Long id) {
-		return memberRepository.findById(id)
+		return memberDataAccess.findById(id)
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 	}
 
 	public Member findMemberByEmail(String email) {
 
-		Member member = memberRepository.findByEmail(email)
+		Member member = memberDataAccess.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		return member;
 	}
 
 	public boolean isMemberExist(String email) {
-		return memberRepository.existsByEmail(email);
+		return memberDataAccess.existsByEmail(email);
 	}
 
 	public String getRedirectUrlForMember(String email) {
@@ -81,23 +81,23 @@ public class MemberService {
 
 	public void memberSignUp(MemberSignUpRequest memberSignUpRequest, PrincipalDetails principalDetails) {
 
-		Member member = memberRepository.findByEmail(principalDetails.getEmail())
+		Member member = memberDataAccess.findByEmail(principalDetails.getEmail())
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		member.updateSignUpMember(memberSignUpRequest.ageRange(), memberSignUpRequest.gender(),
 			memberSignUpRequest.job(), memberSignUpRequest.nickName(), memberSignUpRequest.colorCode());
-		memberRepository.save(member);
+		memberDataAccess.save(member);
 
 	}
 
 	public void memberLogout(PrincipalDetails principalDetails) {
-		Member member = memberRepository.findByEmail(principalDetails.getEmail())
+		Member member = memberDataAccess.findByEmail(principalDetails.getEmail())
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 		refreshTokenService.deleteRefreshToken(member.getEmail());
 	}
 
 	public ApiResponseSpec<List<PageResponse>> processMemberDeletion(PrincipalDetails principalDetails) {
-		Member member = memberRepository.findByEmail(principalDetails.getEmail())
+		Member member = memberDataAccess.findByEmail(principalDetails.getEmail())
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		List<Page> pagesWithUniqueHost = memberPageLinkService.PagesWithUniqueHostByMember(member.getId());
@@ -121,7 +121,7 @@ public class MemberService {
 
 	@Transactional
 	public void memberDelete(PrincipalDetails principalDetails) {
-		Member member = memberRepository.findByEmail(principalDetails.getEmail())
+		Member member = memberDataAccess.findByEmail(principalDetails.getEmail())
 			.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		String memberEmail = member.getEmail();
@@ -130,7 +130,7 @@ public class MemberService {
 
 		notifyService.deleteAllNotificationByMember(findMemberByEmail(memberEmail));
 
-		memberRepository.delete(member);
+		memberDataAccess.delete(member);
 		refreshTokenService.deleteRefreshToken(memberEmail);
 		SecurityContextHolder.clearContext();
 	}

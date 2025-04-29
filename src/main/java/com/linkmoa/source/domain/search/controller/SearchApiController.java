@@ -1,14 +1,17 @@
 package com.linkmoa.source.domain.search.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
+import com.linkmoa.source.domain.search.dto.request.MemberSearchRequestDto;
 import com.linkmoa.source.domain.search.dto.request.SearchRequest;
 import com.linkmoa.source.domain.search.dto.response.SearchPageResponse;
 import com.linkmoa.source.domain.search.service.SearchService;
@@ -41,4 +44,18 @@ public class SearchApiController {
 
 		return ResponseEntity.ok().body(apiSearchResponse);
 	}
+
+	@GetMapping("/members")
+	@PreAuthorize("isAuthenticated()")
+	ResponseEntity<ApiResponseSpec<MemberSearchRequestDto.Response>> getMembersByEmailOrNickname(
+		@RequestBody MemberSearchRequestDto.Request request,
+		@AuthenticationPrincipal PrincipalDetails principalDetails
+	) {
+		return ResponseEntity.ok().body(ApiResponseSpec.success(
+			HttpStatus.OK,
+			"멤버 조회에 성공했습니다.",
+			searchService.searchMembersByEmailOrNickname(request)
+		));
+	}
+
 }
