@@ -40,8 +40,3 @@ logging:
     org.springframework.web.client.RestTemplate: DEBUG
 server:
   forward-headers-strategy: framework
-
-
-app:
-  cookie:
-    domain: ${COOKIE_DOMAIN}
