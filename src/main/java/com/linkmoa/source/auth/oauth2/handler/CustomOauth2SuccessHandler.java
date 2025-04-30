@@ -58,6 +58,17 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 			log.info("OAuth2 로그인에 성공하였습니다. Refresh Token : {}", refreshToken);
 
 		}*/
+
+	/*	*/
+
+	/**
+	 * 배포 시 사용하는 메소드
+	 * @param request
+	 * @param response
+	 * @param authentication
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
@@ -80,13 +91,17 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
 		String refreshToken = jwtService.createRefreshToken();
 		refreshTokenService.saveRefreshToken(refreshToken, email);
-		response.addCookie(jwtService.createRefreshCookie(refreshToken));
+
+		//response.addCookie(jwtService.createRefreshCookie(refreshToken));
+
+		// 쿠키 직접 설정 (SameSite=None + Secure)
+		jwtCookieManager.addRefreshTokenCookie(response, refreshToken, 14 * 24 * 60 * 60);
 
 		response.sendRedirect(frontendBaseUrl + "/reissue");
 
 		// 테스트용으로 추가한 부분
 		String accessToken = jwtService.createAccessToken(email, role);
-		response.addCookie(jwtCookieManager.createCookie("refresh_token", refreshToken, 14 * 24 * 60 * 60));
+		//response.addCookie(jwtCookieManager.createCookie("refresh_token", refreshToken, 14 * 24 * 60 * 60));
 		response.setHeader("Authorization", "Bearer " + accessToken);
 
 		log.info("OAuth2 로그인 성공! AccessToken: {}", accessToken);

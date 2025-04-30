@@ -70,12 +70,14 @@ public class MemberService {
 	}
 
 	public String getRedirectUrlForMember(String email) {
-		Member member = findMemberByEmail(email);
+		Optional<Member> optionalMember = memberDataAccess.findByEmail(email);
 
-		if (member.getGender() == null || member.getJob() == null || member.getAgeRange() == null) {
+		if (optionalMember.isEmpty()) {
+			log.info("회원 정보 부재 시 - 회원가입 페이지로 리다이렉트: {}", email);
 			return frontendBaseUrl + "/signup";
 		}
 
+		log.info("회원 정보 존재 시 - 메인 페이지로 리다이렉트: {}", email);
 		return frontendBaseUrl + "/";
 	}
 
