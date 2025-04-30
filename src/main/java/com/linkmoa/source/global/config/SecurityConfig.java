@@ -1,6 +1,7 @@
 package com.linkmoa.source.global.config;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,7 +71,14 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(Collections.singletonList("*")); // 모든 origin 허용
+		//config.setAllowedOriginPatterns(Collections.singletonList("*")); // 모든 origin 허용
+		config.setAllowedOrigins(List.of(
+			"http://localhost:3000",       // 로컬 개발용
+			"https://dev.linkrew.com",     // 개발 서버
+			"https://linkrew.com",         // 운영 서버
+			"http://localhost:5617",
+			"http://localhost:8080"
+		));
 		config.setAllowedMethods(Collections.singletonList("*"));        // 모든 HTTP 메서드 허용
 		config.setAllowedHeaders(Collections.singletonList("*"));        // 모든 헤더 허용
 		config.setExposedHeaders(Collections.singletonList("Authorization")); // Authorization 헤더 노출

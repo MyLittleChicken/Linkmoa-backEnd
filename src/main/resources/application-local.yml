@@ -13,3 +13,7 @@ spring:
 
 frontend:
   base-url: ${FRONTEND_BASE_URL}
+
+app:
+  cookie:
+    domain: ${COOKIE_DOMAIN}

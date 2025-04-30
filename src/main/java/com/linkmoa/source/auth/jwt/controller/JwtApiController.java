@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.jwt.refresh.service.RefreshTokenService;
 import com.linkmoa.source.auth.jwt.service.JwtService;
-import com.linkmoa.source.domain.member.entity.Member;
-import com.linkmoa.source.domain.member.error.MemberErrorCode;
-import com.linkmoa.source.domain.member.exception.MemberException;
 import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.global.spec.ApiResponseSpec;
@@ -35,17 +32,15 @@ public class JwtApiController {
 		@CookieValue(value = "refresh_token") String refreshToken) {
 
 		try {
+
 			jwtService.validateToken(refreshToken);
 
 			//email
 			String email = refreshTokenService.getEmailByRefreshToken(refreshToken);
 			log.info("Extracted Email: {}", email);
 
-			Member member = memberDataAccess.findByEmail(email)
-				.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-
 			// Access Token 생성
-			String accessToken = jwtService.createAccessToken(member.getEmail(), String.valueOf(member.getRole()));
+			String accessToken = jwtService.createAccessToken(email, "USER");
 			log.info("Generated Access Token: {}", accessToken);
 
 			//redirect url 얻기
