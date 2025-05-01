@@ -11,7 +11,6 @@ public record DirectoryTransmissionRequestRawResult(
 	String nickname,
 	String colorCode,
 	LocalDateTime sentAt,
-	String message,
 	RequestStatus requestStatus,
 	NotificationType notificationType
 ) {
