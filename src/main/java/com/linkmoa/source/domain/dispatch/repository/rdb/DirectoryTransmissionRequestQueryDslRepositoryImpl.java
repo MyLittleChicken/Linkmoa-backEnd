@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.linkmoa.source.domain.dispatch.dto.response.DirectoryTransmissionRequestRawResult;
 import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
-import com.linkmoa.source.domain.dispatch.dto.response.DispatchRawResult;
 import com.linkmoa.source.domain.dispatch.dto.response.NotificationSenderInfo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,9 +23,9 @@ public class DirectoryTransmissionRequestQueryDslRepositoryImpl {
 
 	public List<DispatchDetailResponse> findAllDirectoryTransmissionRequestByReceiverEmail(String receiverEmail) {
 
-		List<DispatchRawResult> rawResults = jpaQueryFactory.select(
+		List<DirectoryTransmissionRequestRawResult> rawResults = jpaQueryFactory.select(
 				Projections.constructor(
-					DispatchRawResult.class,
+					DirectoryTransmissionRequestRawResult.class,
 					directoryTransmissionRequest.id,
 					directoryTransmissionRequest.sender.email,
 					directoryTransmissionRequest.sender.nickname,
@@ -45,11 +45,11 @@ public class DirectoryTransmissionRequestQueryDslRepositoryImpl {
 					raw.email(),
 					raw.nickname(),
 					raw.colorCode(),
-					raw.sentAt(),
-					String.format("%s(%s)님이 회원님에게 디렉토리를 전송했습니다.", raw.nickname(), raw.email())
+					raw.sentAt()
 				),
 				raw.requestStatus(),
-				raw.notificationType()
+				raw.notificationType(),
+				String.format("%s(%s)님이 회원님에게 디렉토리를 전송했습니다.", raw.nickname(), raw.email())
 			)).toList();
 	}
 
