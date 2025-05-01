@@ -9,7 +9,6 @@ public record NotificationSenderInfo(
 	String email,
 	String nickname,
 	String colorCode,
-	LocalDateTime sentAt,
-	String message
+	LocalDateTime sentAt
 ) {
 }
