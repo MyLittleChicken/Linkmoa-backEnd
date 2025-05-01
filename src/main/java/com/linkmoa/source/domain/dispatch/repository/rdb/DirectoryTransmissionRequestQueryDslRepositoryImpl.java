@@ -32,7 +32,8 @@ public class DirectoryTransmissionRequestQueryDslRepositoryImpl {
 					directoryTransmissionRequest.sender.colorCode,
 					directoryTransmissionRequest.createdAt,
 					directoryTransmissionRequest.requestStatus,
-					directoryTransmissionRequest.notificationType
+					directoryTransmissionRequest.notificationType,
+					directoryTransmissionRequest.directory.directoryName
 				))
 			.from(directoryTransmissionRequest)
 			.where(receiverEmailEq(receiverEmail))
@@ -49,7 +50,7 @@ public class DirectoryTransmissionRequestQueryDslRepositoryImpl {
 				),
 				raw.requestStatus(),
 				raw.notificationType(),
-				String.format("%s(%s)님이 회원님에게 디렉토리를 전송했습니다.", raw.nickname(), raw.email())
+				String.format("%s(%s)님이 회원님에게 %s디렉토리를 전송했습니다.", raw.nickname(), raw.email(), raw.directoryName())
 			)).toList();
 	}
 
