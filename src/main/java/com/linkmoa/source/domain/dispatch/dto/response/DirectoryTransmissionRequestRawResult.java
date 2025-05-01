@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
 import com.linkmoa.source.domain.notification.constant.NotificationType;
 
-public record DispatchRawResult(
+public record DirectoryTransmissionRequestRawResult(
 	Long id,
 	String email,
 	String nickname,
@@ -14,6 +14,5 @@ public record DispatchRawResult(
 	String message,
 	RequestStatus requestStatus,
 	NotificationType notificationType
-
 ) {
 }
