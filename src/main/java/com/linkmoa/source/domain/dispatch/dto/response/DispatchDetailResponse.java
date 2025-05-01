@@ -8,7 +8,7 @@ import lombok.Builder;
 @Builder
 public record DispatchDetailResponse(
 	Long id,
-	String senderEmail,
+	NotificationSenderInfo senderInfo,
 	RequestStatus requestStatus,
 	NotificationType notificationType
 ) {
