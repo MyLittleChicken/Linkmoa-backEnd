@@ -12,6 +12,7 @@ public record DirectoryTransmissionRequestRawResult(
 	String colorCode,
 	LocalDateTime sentAt,
 	RequestStatus requestStatus,
-	NotificationType notificationType
+	NotificationType notificationType,
+	String directoryName
 ) {
 }
