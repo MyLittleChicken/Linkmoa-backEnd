@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
 import com.linkmoa.source.domain.dispatch.dto.request.DispatchProcessingRequest;
-import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
+import com.linkmoa.source.domain.dispatch.dto.response.DispatchSimpleResponse;
 import com.linkmoa.source.domain.dispatch.entity.SharePageInvitationRequest;
 import com.linkmoa.source.domain.dispatch.error.DispatchErrorCode;
 import com.linkmoa.source.domain.dispatch.exception.DispatchException;
@@ -33,7 +33,7 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 
 	@Override
 	@Transactional
-	public DispatchDetailResponse processRequest(
+	public DispatchSimpleResponse processRequest(
 		DispatchProcessingRequest request, PrincipalDetails principalDetails) {
 
 		Long requestId = request.requestId();
@@ -62,12 +62,12 @@ public class SharePageInvitationRequestProcessor implements DispatchProcessor {
 			acceptSharePageInvitation(page, member, permissionType);
 		}
 
-		return DispatchDetailResponse.builder()
-			.id(sharePageInvitationRequest.getId())
-			.requestStatus(sharePageInvitationRequest.getRequestStatus())
-			.senderEmail(sharePageInvitationRequest.getSender().getEmail())
-			.notificationType(NotificationType.INVITE_PAGE)
-			.build();
+		return DispatchSimpleResponse.of(
+			sharePageInvitationRequest.getId(),
+			sharePageInvitationRequest.getRequestStatus(),
+			sharePageInvitationRequest.getSender().getEmail(),
+			NotificationType.INVITE_PAGE
+		);
 
 	}
 
