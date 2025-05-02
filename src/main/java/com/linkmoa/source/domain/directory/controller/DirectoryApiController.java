@@ -11,16 +11,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
+import com.linkmoa.source.domain.directory.constant.SortType;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryChangeParentDto;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryCreateDto;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryDragAndDropDto;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryIdDto;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryPasteDto;
 import com.linkmoa.source.domain.directory.dto.request.DirectoryUpdateDto;
+import com.linkmoa.source.domain.directory.resolver.DirectoryParameterResolver;
 import com.linkmoa.source.domain.directory.service.DirectoryService;
+import com.linkmoa.source.global.constant.CommandType;
 import com.linkmoa.source.global.spec.ApiResponseSpec;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DirectoryApiController {
 
 	private final DirectoryService directoryService;
+	private final DirectoryParameterResolver directoryParameterResolver;
 
 	@PostMapping
 	@PreAuthorize("isAuthenticated()")
@@ -93,13 +98,17 @@ public class DirectoryApiController {
 	@GetMapping("/details")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponseSpec<DirectoryIdDto.Response>> getDirectory(
-		@RequestBody @Validated DirectoryIdDto.Request directoryIdRequest,
+		@RequestParam("pageId") Long pageId,
+		@RequestParam("commandType") CommandType commandType,
+		@RequestParam("directroyId") Long directoryId,
+		@RequestParam("sortType") SortType sortType,
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"Directory 클릭 시, 해당 디렉토리 내에 사이트 및 디렉토리를 조회했습니다.",
 			directoryService.findDirectoryDetails(
-				directoryIdRequest, principalDetails)
+				directoryParameterResolver.createDirectoryDetailsRequest(pageId, commandType, directoryId, sortType),
+				principalDetails)
 		));
 	}
 
