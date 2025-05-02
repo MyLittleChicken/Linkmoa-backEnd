@@ -100,7 +100,7 @@ public class DirectoryApiController {
 	public ResponseEntity<ApiResponseSpec<DirectoryIdDto.Response>> getDirectory(
 		@RequestParam("pageId") Long pageId,
 		@RequestParam("commandType") CommandType commandType,
-		@RequestParam("directroyId") Long directoryId,
+		@RequestParam("directoryId") Long directoryId,
 		@RequestParam("sortType") SortType sortType,
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
