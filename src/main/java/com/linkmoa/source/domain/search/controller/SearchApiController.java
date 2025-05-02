@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
@@ -48,13 +49,13 @@ public class SearchApiController {
 	@GetMapping("/members")
 	@PreAuthorize("isAuthenticated()")
 	ResponseEntity<ApiResponseSpec<MemberSearchRequestDto.Response>> getMembersByEmailOrNickname(
-		@RequestBody MemberSearchRequestDto.Request request,
+		@RequestParam("keyword") String keyword,
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"멤버 조회에 성공했습니다.",
-			searchService.searchMembersByEmailOrNickname(request)
+			searchService.searchMembersByEmailOrNickname(keyword)
 		));
 	}
 
