@@ -103,8 +103,8 @@ public class SearchService {
 	}
 
 	public MemberSearchRequestDto.Response searchMembersByEmailOrNickname(
-		MemberSearchRequestDto.Request request) {
-		List<MemberSimpleResponse> memberSimpleResponses = memberDataAccess.searchByKeyword(request.keyword());
+		String keyword) {
+		List<MemberSimpleResponse> memberSimpleResponses = memberDataAccess.searchByKeyword(keyword);
 
 		return new MemberSearchRequestDto.Response(memberSimpleResponses);
 
