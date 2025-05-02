@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
@@ -24,7 +25,9 @@ import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
 import com.linkmoa.source.domain.page.entity.Page;
+import com.linkmoa.source.domain.page.resolver.PageParameterResolver;
 import com.linkmoa.source.domain.page.service.PageService;
+import com.linkmoa.source.global.constant.CommandType;
 import com.linkmoa.source.global.dto.request.BaseRequest;
 import com.linkmoa.source.global.spec.ApiResponseSpec;
 
@@ -36,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class PageApiController {
 
 	private final PageService pageService;
+	private final PageParameterResolver pageParameterResolver;
 
 	@PostMapping
 	@PreAuthorize("isAuthenticated()")
@@ -95,13 +99,14 @@ public class PageApiController {
 	@GetMapping("/details")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponseSpec<PageDetailsResponse>> getPageDetails(
-		@RequestBody @Validated BaseRequest baseRequest,
+		@RequestParam("pageId") Long pageId,
+		@RequestParam("commandType") CommandType commandType,
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"페이지 접속 시, 해당 페이지 메인화면을 조회합니다",
-			pageService.getPageMain(baseRequest, principalDetails)
+			pageService.getPageMain(pageParameterResolver.createBaseRequestFrom(pageId, commandType), principalDetails)
 		));
 	}
 
@@ -119,13 +124,14 @@ public class PageApiController {
 	@GetMapping("/dashboard")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponseSpec<SharePageDashboardDto.Response>> getPageDashboard(
-		@RequestBody SharePageDashboardDto.Request request,
+		@RequestParam("pageId") Long pageId,
+		@RequestParam("commandType") CommandType commandType,
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"공유 페이지 대시보드 정보를 조회합니다.",
-			pageService.getPageDashboard(request)
+			pageService.getPageDashboard(pageParameterResolver.createDashboardRequest(pageId, commandType))
 
 		));
 	}
