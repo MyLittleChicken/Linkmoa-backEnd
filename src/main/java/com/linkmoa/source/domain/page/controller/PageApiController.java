@@ -124,13 +124,14 @@ public class PageApiController {
 	@GetMapping("/dashboard")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponseSpec<SharePageDashboardDto.Response>> getPageDashboard(
-		@RequestBody SharePageDashboardDto.Request request,
+		@RequestParam("pageId") Long pageId,
+		@RequestParam("commandType") CommandType commandType,
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"공유 페이지 대시보드 정보를 조회합니다.",
-			pageService.getPageDashboard(request)
+			pageService.getPageDashboard(pageParameterResolver.createDashboardRequest(pageId, commandType))
 
 		));
 	}
