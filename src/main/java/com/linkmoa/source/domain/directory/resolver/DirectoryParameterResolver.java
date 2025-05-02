@@ -14,9 +14,9 @@ public class DirectoryParameterResolver {
 		return new BaseRequest(pageId, commandType);
 	}
 
-	public DirectoryIdDto.Request createDirectoryDetailsRequest(Long pageId, CommandType commandType, Long directroyId,
+	public DirectoryIdDto.Request createDirectoryDetailsRequest(Long pageId, CommandType commandType, Long directoryId,
 		SortType sortType) {
-		return new DirectoryIdDto.Request(createBaseRequestFrom(pageId, commandType), directroyId, sortType);
+		return new DirectoryIdDto.Request(createBaseRequestFrom(pageId, commandType), directoryId, sortType);
 	}
 
 }
