@@ -8,7 +8,7 @@ import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.service.DirectoryService;
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
 import com.linkmoa.source.domain.dispatch.dto.request.DispatchProcessingRequest;
-import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
+import com.linkmoa.source.domain.dispatch.dto.response.DispatchSimpleResponse;
 import com.linkmoa.source.domain.dispatch.entity.DirectoryTransmissionRequest;
 import com.linkmoa.source.domain.dispatch.error.DispatchErrorCode;
 import com.linkmoa.source.domain.dispatch.exception.DispatchException;
@@ -32,7 +32,7 @@ public class DirectoryTransmissionRequestProcessor implements DispatchProcessor 
 
 	@Override
 	@Transactional
-	public DispatchDetailResponse processRequest(
+	public DispatchSimpleResponse processRequest(
 		DispatchProcessingRequest dispatchProcessingRequest, PrincipalDetails principalDetails) {
 		Long requestId = dispatchProcessingRequest.requestId();
 		RequestStatus requestStatus = dispatchProcessingRequest.requestStatus();
@@ -55,12 +55,12 @@ public class DirectoryTransmissionRequestProcessor implements DispatchProcessor 
 
 		String successMessage;
 
-		return DispatchDetailResponse.builder()
-			.id(directoryTransmissionRequest.getId())
-			.requestStatus(directoryTransmissionRequest.getRequestStatus())
-			.senderEmail(directoryTransmissionRequest.getSender().getEmail())
-			.notificationType(NotificationType.TRANSMIT_DIRECTORY)
-			.build();
+		return DispatchSimpleResponse.of(
+			directoryTransmissionRequest.getId(),
+			directoryTransmissionRequest.getRequestStatus(),
+			directoryTransmissionRequest.getSender().getEmail(),
+			NotificationType.TRANSMIT_DIRECTORY
+		);
 
 	}
 

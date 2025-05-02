@@ -1,16 +1,18 @@
 package com.linkmoa.source.domain.dispatch.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.linkmoa.source.domain.dispatch.constant.RequestStatus;
 import com.linkmoa.source.domain.notification.constant.NotificationType;
 
-import lombok.Builder;
-
-@Builder
-public record DispatchDetailResponse(
+public record SharePageInvitationRequestRawResult(
 	Long id,
-	NotificationSenderInfo senderInfo,
+	String email,
+	String nickname,
+	String colorCode,
+	LocalDateTime sentAt,
 	RequestStatus requestStatus,
 	NotificationType notificationType,
-	String message
+	String pageTitle
 ) {
 }

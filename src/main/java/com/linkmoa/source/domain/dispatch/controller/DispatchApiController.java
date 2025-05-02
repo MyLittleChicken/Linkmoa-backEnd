@@ -16,7 +16,7 @@ import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.dispatch.dto.request.DirectoryTransmissionDto;
 import com.linkmoa.source.domain.dispatch.dto.request.DispatchProcessingRequest;
 import com.linkmoa.source.domain.dispatch.dto.request.SharePageInvitationRequestDto;
-import com.linkmoa.source.domain.dispatch.dto.response.DispatchDetailResponse;
+import com.linkmoa.source.domain.dispatch.dto.response.DispatchSimpleResponse;
 import com.linkmoa.source.domain.dispatch.dto.response.NotificationsDetailsResponse;
 import com.linkmoa.source.domain.dispatch.service.DispatchMessageResolver;
 import com.linkmoa.source.domain.dispatch.service.DispatchRequestService;
@@ -52,10 +52,10 @@ public class DispatchApiController {
 
 	@PatchMapping("/directory-transmissions/status")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiResponseSpec<DispatchDetailResponse>> processDirectoryTransmission(
+	public ResponseEntity<ApiResponseSpec<DispatchSimpleResponse>> processDirectoryTransmission(
 		@RequestBody @Validated DispatchProcessingRequest dispatchProcessingRequest,
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		DispatchDetailResponse response = directoryTransmissionRequestProcessor.processRequest(
+		DispatchSimpleResponse response = directoryTransmissionRequestProcessor.processRequest(
 			dispatchProcessingRequest, principalDetails);
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
@@ -79,11 +79,11 @@ public class DispatchApiController {
 
 	@PatchMapping("/share-page-invitations/status")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiResponseSpec<DispatchDetailResponse>> processSharePageInvitation(
+	public ResponseEntity<ApiResponseSpec<DispatchSimpleResponse>> processSharePageInvitation(
 		@RequestBody @Validated DispatchProcessingRequest dispatchProcessingRequest,
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-		DispatchDetailResponse response = sharePageInvitationRequestProcessor.processRequest(
+		DispatchSimpleResponse response = sharePageInvitationRequestProcessor.processRequest(
 			dispatchProcessingRequest, principalDetails);
 
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
