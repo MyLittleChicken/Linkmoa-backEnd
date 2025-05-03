@@ -16,6 +16,7 @@ import com.linkmoa.source.domain.favorite.service.FavoriteService;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
+import com.linkmoa.source.domain.member.repository.MemberDataAccess;
 import com.linkmoa.source.domain.member.service.MemberService;
 import com.linkmoa.source.domain.memberPageLink.constant.PermissionType;
 import com.linkmoa.source.domain.memberPageLink.entity.MemberPageLink;
@@ -27,6 +28,7 @@ import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
 import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.SharePageDashboardPermissionUpdateDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageMembersDropdownDto;
 import com.linkmoa.source.domain.page.dto.response.PageDashboardMemberDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
@@ -47,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PageService {
 
 	private final PageDataAccess pageDataAccess;
+	private final MemberDataAccess memberDataAccess;
 	private final MemberService memberService;
 	private final DirectoryDataAccess directoryDataAccess;
 	private final MemberPageLinkDataAccess memberPageLinkDataAccess;
@@ -305,6 +308,16 @@ public class PageService {
 			.targetMemberEmail(targetMember.getEmail())
 			.message(message)
 			.build();
+	}
+
+	@ValidationApplied
+	public SharePageMembersDropdownDto.Response getSharePageMembers(
+		SharePageMembersDropdownDto.Request request,
+		PrincipalDetails principalDetails
+	) {
+		return new SharePageMembersDropdownDto.Response(
+			memberDataAccess.findMembersBySharePageId(request.baseRequest().pageId())
+		);
 	}
 
 }

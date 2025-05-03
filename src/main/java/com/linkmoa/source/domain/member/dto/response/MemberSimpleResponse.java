@@ -4,7 +4,8 @@ public record MemberSimpleResponse(
 
 	Long memberId,
 	String email,
-	String nickName
+	String nickName,
+	String colorCode
 
 ) {
 }

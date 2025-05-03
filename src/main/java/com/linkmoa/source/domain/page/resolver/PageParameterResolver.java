@@ -3,6 +3,7 @@ package com.linkmoa.source.domain.page.resolver;
 import org.springframework.stereotype.Component;
 
 import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageMembersDropdownDto;
 import com.linkmoa.source.global.constant.CommandType;
 import com.linkmoa.source.global.dto.request.BaseRequest;
 
@@ -21,6 +22,10 @@ public class PageParameterResolver {
 
 	public SharePageDashboardDto.Request createDashboardRequest(Long pageId, CommandType commandType) {
 		return new SharePageDashboardDto.Request(createBaseRequestFrom(pageId, commandType));
+	}
+
+	public SharePageMembersDropdownDto.Request createSharePageMembersRequest(Long pageId, CommandType commandType) {
+		return new SharePageMembersDropdownDto.Request(createBaseRequestFrom(pageId, commandType));
 	}
 
 }
