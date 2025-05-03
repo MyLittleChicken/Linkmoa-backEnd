@@ -1,6 +1,7 @@
 package com.linkmoa.source.domain.member.repository.rdb;
 
 import static com.linkmoa.source.domain.member.entity.QMember.*;
+import static com.linkmoa.source.domain.memberPageLink.entity.QMemberPageLink.*;
 
 import java.util.List;
 
@@ -34,4 +35,23 @@ public class MemberQueryDslRepository {
 			.fetch();
 	}
 
+	public List<MemberSimpleResponse> findMembersBySharePageId(Long pageId) {
+		return jpaQueryFactory
+			.select(Projections.constructor(MemberSimpleResponse.class,
+				member.id,
+				member.email,
+				member.nickname,
+				member.colorCode
+			))
+			.from(member)
+			.join(
+				member.memberPageLinks, memberPageLink
+			)
+			.where(memberPageLink.page.id.eq(pageId))
+			.orderBy(
+				memberPageLink.permissionType.asc(), // Enum의 선언 순서 기준
+				member.nickname.asc()
+			)
+			.fetch();
+	}
 }

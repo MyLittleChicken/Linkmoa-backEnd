@@ -49,4 +49,9 @@ public class MemberDataAccessImpl implements MemberDataAccess {
 	public List<MemberSimpleResponse> searchByKeyword(String keyword) {
 		return memberQueryDslRepository.searchByKeyword(keyword);
 	}
+
+	@Override
+	public List<MemberSimpleResponse> findMembersBySharePageId(Long pageId) {
+		return memberQueryDslRepository.findMembersBySharePageId(pageId);
+	}
 }

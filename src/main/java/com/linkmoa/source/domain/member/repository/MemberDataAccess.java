@@ -20,4 +20,6 @@ public interface MemberDataAccess {
 
 	List<MemberSimpleResponse> searchByKeyword(String keyword);
 
+	List<MemberSimpleResponse> findMembersBySharePageId(Long pageId);
+
 }
