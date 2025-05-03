@@ -21,6 +21,7 @@ import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
 import com.linkmoa.source.domain.page.dto.request.SharePageDashboardDto;
 import com.linkmoa.source.domain.page.dto.request.SharePageDashboardPermissionUpdateDto;
+import com.linkmoa.source.domain.page.dto.request.SharePageMembersDropdownDto;
 import com.linkmoa.source.domain.page.dto.response.PageDetailsResponse;
 import com.linkmoa.source.domain.page.dto.response.PageResponse;
 import com.linkmoa.source.domain.page.dto.response.SharePageLeaveResponse;
@@ -146,6 +147,23 @@ public class PageApiController {
 			HttpStatus.OK,
 			"공유 페이지 멤버 권한을 수정했습니다.",
 			pageService.updateSharePagePermission(request, principalDetails)
+		));
+	}
+
+	@GetMapping("/members")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<ApiResponseSpec<SharePageMembersDropdownDto.Response>> getSharePageMembers(
+		@RequestParam("pageId") Long pageId,
+		@RequestParam("commandType") CommandType commandType,
+		@AuthenticationPrincipal PrincipalDetails principalDetails
+	) {
+		return ResponseEntity.ok().body(ApiResponseSpec.success(
+			HttpStatus.OK,
+			"공유 페이지에 참여 중인 멤버 목록을 조회합니다.",
+			pageService.getSharePageMembers(
+				pageParameterResolver.createSharePageMembersRequest(pageId, commandType),
+				principalDetails
+			)
 		));
 	}
 }
