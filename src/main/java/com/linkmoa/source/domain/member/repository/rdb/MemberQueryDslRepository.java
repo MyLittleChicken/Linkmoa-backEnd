@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.linkmoa.source.domain.member.dto.response.MemberSimpleResponse;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,14 @@ public class MemberQueryDslRepository {
 			)
 			.where(memberPageLink.page.id.eq(pageId))
 			.orderBy(
-				memberPageLink.permissionType.asc(), // Enum의 선언 순서 기준
+				Expressions.numberTemplate(Integer.class,
+					"case {0} " +
+						"when 'ADMIN' then 1 " +
+						"when 'HOST' then 2 " +
+						"when 'EDITOR' then 3 " +
+						"when 'VIEWER' then 4 " +
+						"else 99 end", memberPageLink.permissionType.stringValue()
+				).asc(),
 				member.nickname.asc()
 			)
 			.fetch();
