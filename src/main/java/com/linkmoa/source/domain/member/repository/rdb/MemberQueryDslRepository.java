@@ -23,7 +23,8 @@ public class MemberQueryDslRepository {
 			.select(Projections.constructor(MemberSimpleResponse.class,
 				member.id,
 				member.email,
-				member.nickname
+				member.nickname,
+				member.colorCode
 			))
 			.from(member)
 			.where(
