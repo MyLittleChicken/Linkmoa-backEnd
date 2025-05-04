@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.linkmoa.source.auth.oauth2.dto.response.LoginSuccessResponse;
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.page.dto.request.PageCreateDto;
 import com.linkmoa.source.domain.page.dto.request.PageDeleteDto;
@@ -113,12 +114,12 @@ public class PageApiController {
 
 	@GetMapping("/login")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ApiResponseSpec<PageDetailsResponse>> loadPersonalPageMain(
+	public ResponseEntity<ApiResponseSpec<LoginSuccessResponse>> loadPersonalPageMain(
 		@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		return ResponseEntity.ok().body(ApiResponseSpec.success(
 			HttpStatus.OK,
 			"로그인 성공 시, 유저의 개인 페이지 메인 화면 데이터를 조회합니다.",
-			pageService.loadPersonalPageMain(principalDetails)
+			pageService.createLoginSuccessResponse(principalDetails)
 		));
 	}
 
