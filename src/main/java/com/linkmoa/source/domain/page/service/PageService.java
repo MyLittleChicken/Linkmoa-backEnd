@@ -7,12 +7,14 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkmoa.source.auth.oauth2.dto.response.LoginSuccessResponse;
 import com.linkmoa.source.auth.oauth2.principal.PrincipalDetails;
 import com.linkmoa.source.domain.directory.entity.Directory;
 import com.linkmoa.source.domain.directory.repository.DirectoryDataAccess;
 import com.linkmoa.source.domain.favorite.entity.Favorite;
 import com.linkmoa.source.domain.favorite.repository.FavoriteDataAccess;
 import com.linkmoa.source.domain.favorite.service.FavoriteService;
+import com.linkmoa.source.domain.member.dto.response.MemberSimpleResponse;
 import com.linkmoa.source.domain.member.entity.Member;
 import com.linkmoa.source.domain.member.error.MemberErrorCode;
 import com.linkmoa.source.domain.member.exception.MemberException;
@@ -219,13 +221,13 @@ public class PageService {
 		Page page = pageDataAccess.findById(baseRequest.pageId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
-		return getPageDetailsResponse(page, principalDetails);
+		return getPageDetailsResponse(page, memberService.findMemberByEmail(principalDetails.getEmail()));
 	}
 
-	private PageDetailsResponse getPageDetailsResponse(Page page, PrincipalDetails principalDetails) {
+	private PageDetailsResponse getPageDetailsResponse(Page page, Member member) {
 		Long directoryId = page.getRootDirectory().getId();
 
-		List<Favorite> favorites = favoriteDataAccess.findByMember(principalDetails.getMember());
+		List<Favorite> favorites = favoriteDataAccess.findByMember(member);
 
 		List<Long> favoriteDirectoryIds = favoriteService.findFavoriteDirectoryIds(favorites);
 		List<Long> favoriteSiteIds = favoriteService.findFavoriteSiteIds(favorites);
@@ -241,13 +243,34 @@ public class PageService {
 		return pageDetailsResponse;
 	}
 
-	public PageDetailsResponse loadPersonalPageMain(PrincipalDetails principalDetails) {
-		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
+	private PageDetailsResponse getPersonalPageMain(Member member) {
 
 		Page personalPage = memberPageLinkDataAccess.findPersonalPageByMemberId(member.getId())
 			.orElseThrow(() -> new PageException(PageErrorCode.PAGE_NOT_FOUND));
 
-		return getPageDetailsResponse(personalPage, principalDetails);
+		return getPageDetailsResponse(personalPage, member);
+	}
+
+	private MemberSimpleResponse toMemberSimpleResponse(final Member member) {
+		return new MemberSimpleResponse(
+			member.getId(),
+			member.getEmail(),
+			member.getNickname(),
+			member.getColorCode());
+	}
+
+	public LoginSuccessResponse createLoginSuccessResponse(
+		final PrincipalDetails principalDetails) {
+
+		Member member = memberService.findMemberByEmail(principalDetails.getEmail());
+
+		PageDetailsResponse pageDetailsResponse = getPersonalPageMain(member);
+
+		MemberSimpleResponse memberSimpleResponse = toMemberSimpleResponse(member);
+
+		return new LoginSuccessResponse(
+			memberSimpleResponse,
+			pageDetailsResponse);
 	}
 
 	public Page getPersonalPage(Long memberId) {
