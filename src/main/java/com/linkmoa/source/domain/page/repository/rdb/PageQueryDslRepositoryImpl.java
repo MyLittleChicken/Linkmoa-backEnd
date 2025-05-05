@@ -61,6 +61,7 @@ public class PageQueryDslRepositoryImpl {
 				member.id,
 				member.email,
 				member.nickname,
+				member.colorCode,
 				memberPageLink.permissionType.stringValue(),
 				Expressions.constant(false)
 			))

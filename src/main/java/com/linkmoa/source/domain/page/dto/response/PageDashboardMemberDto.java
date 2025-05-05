@@ -7,6 +7,7 @@ public record PageDashboardMemberDto(
 	Long memberId,
 	String email,
 	String nickName,
+	String colorCode,
 	String role,
 	boolean isWaiting
 ) {
