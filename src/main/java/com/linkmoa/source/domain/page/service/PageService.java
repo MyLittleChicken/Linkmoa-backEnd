@@ -290,6 +290,7 @@ public class PageService {
 
 		return SharePageDashboardDto.Response.builder()
 			.pageId(request.baseRequest().pageId())
+			.pageType(pageDataAccess.findById(request.baseRequest().pageId()).get().getPageType())
 			.visibility(pageDataAccess.findPageVisibilityByPageId(request.baseRequest().pageId()))
 			.pageMembers(allMembers)
 			.build();
