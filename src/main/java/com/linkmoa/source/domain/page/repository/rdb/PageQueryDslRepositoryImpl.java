@@ -61,6 +61,7 @@ public class PageQueryDslRepositoryImpl {
 				member.id,
 				member.email,
 				member.nickname,
+				member.colorCode,
 				memberPageLink.permissionType.stringValue(),
 				Expressions.constant(false)
 			))
@@ -77,6 +78,7 @@ public class PageQueryDslRepositoryImpl {
 				sharePageInvitationRequest.receiver.id,
 				sharePageInvitationRequest.receiver.email,
 				sharePageInvitationRequest.receiver.nickname,
+				sharePageInvitationRequest.receiver.colorCode,
 				Expressions.constant("UNKNOWN"),
 				Expressions.constant(true)
 			))
