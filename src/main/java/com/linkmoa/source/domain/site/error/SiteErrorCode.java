@@ -10,7 +10,8 @@ import lombok.Getter;
 public enum SiteErrorCode implements ErrorCode {
 
 	SITE_NOT_FOUND(HttpStatus.NOT_FOUND, "Site를 찾을 수 없습니다."),
-	SITE_ERRORCODE_TEST(HttpStatus.NOT_FOUND, "site error code 테스트");
+	SITE_ERRORCODE_TEST(HttpStatus.NOT_FOUND, "site error code 테스트"),
+	INVALID_URL(HttpStatus.BAD_REQUEST, "잘못된 URL 형식입니다.");
 
 	private HttpStatus httpStatus;
 	private String errorMessage;
