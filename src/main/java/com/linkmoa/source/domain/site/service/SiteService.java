@@ -44,6 +44,7 @@ public class SiteService {
 			.directory(directory)
 			.orderIndex(nextOrderIndex)
 			.faviconUrl(request.faviconUrl())
+			.pageId(request.baseRequest().pageId())
 			.build();
 
 		siteDataAccess.save(newSite);
