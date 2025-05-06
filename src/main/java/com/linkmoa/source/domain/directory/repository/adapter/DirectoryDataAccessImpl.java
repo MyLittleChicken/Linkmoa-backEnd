@@ -104,4 +104,12 @@ public class DirectoryDataAccessImpl implements DirectoryDataAccess {
 		return directoryJpaRepository.findFullPathByDirectoryId(directoryId);
 	}
 
+	@Override
+	public List<DirectorySimpleResponse> findDirectoriesByKeywordAndPageId(
+		final String keyword,
+		final Long pageId,
+		final Long memberId) {
+		return null;
+	}
+
 }

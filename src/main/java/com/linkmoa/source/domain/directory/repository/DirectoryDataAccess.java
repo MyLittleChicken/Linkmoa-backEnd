@@ -44,4 +44,7 @@ public interface DirectoryDataAccess {
 
 	String findFullPathByDirectoryId(Long directoryId);
 
+	List<DirectorySimpleResponse> findDirectoriesByKeywordAndPageId(final String keyword, final Long pageId,
+		final Long memberId);
+
 }

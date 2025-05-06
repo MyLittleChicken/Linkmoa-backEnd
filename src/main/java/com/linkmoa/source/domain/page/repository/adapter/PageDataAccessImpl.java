@@ -43,11 +43,6 @@ public class PageDataAccessImpl implements PageDataAccess {
 	}
 
 	@Override
-	public List<Object[]> findDirectoriesAndSitesByNameKeyword(String name, Long rootDirectoryId, Long memberId) {
-		return pageJpaRepository.findDirectoriesAndSitesByNameKeyword(name, rootDirectoryId, memberId);
-	}
-
-	@Override
 	public List<PageResponse> findAllPagesByMemberId(Long memberId) {
 		return pageQueryDslRepository.findAllPagesByMemberId(memberId);
 	}

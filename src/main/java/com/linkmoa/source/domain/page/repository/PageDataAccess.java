@@ -18,8 +18,6 @@ public interface PageDataAccess {
 
 	void delete(Page page);
 
-	List<Object[]> findDirectoriesAndSitesByNameKeyword(String name, Long rootDirectoryId, Long memberId);
-
 	List<PageResponse> findAllPagesByMemberId(Long memberId);
 
 	Long findRootDirectoryIdByPageId(Long pageId);
