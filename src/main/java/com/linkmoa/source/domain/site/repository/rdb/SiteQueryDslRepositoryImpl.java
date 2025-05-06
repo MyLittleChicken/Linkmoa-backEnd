@@ -45,6 +45,7 @@ public class SiteQueryDslRepositoryImpl {
 				.siteName(s.getSiteName())
 				.orderIndex(sortType == SortType.BASIC ? s.getOrderIndex() : null)
 				.isFavorite(favoriteSiteIds.contains(s.getId()))
+				.faviconUrl(s.getFaviconUrl())
 				.build())
 			.collect(Collectors.toList());
 
