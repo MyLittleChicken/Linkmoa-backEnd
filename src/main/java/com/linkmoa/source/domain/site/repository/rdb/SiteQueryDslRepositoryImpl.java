@@ -61,7 +61,8 @@ public class SiteQueryDslRepositoryImpl {
 					site.id,
 					site.siteName,
 					site.siteUrl,
-					Expressions.constant(true)
+					Expressions.constant(true),
+					site.faviconUrl
 				)
 			)
 			.from(site)
