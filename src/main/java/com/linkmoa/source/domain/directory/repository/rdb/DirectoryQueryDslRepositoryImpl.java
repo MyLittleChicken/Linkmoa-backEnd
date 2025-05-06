@@ -141,4 +141,31 @@ public class DirectoryQueryDslRepositoryImpl {
 			.fetch();
 	}
 
+	public List<DirectorySimpleResponse> findDirectoriesByKeywordAndPageId(
+		final String keyword,
+		final Long pageId,
+		final Long memberId) {
+
+		return jpaQueryFactory
+			.select(
+				Projections.constructor(
+					DirectorySimpleResponse.class,
+					directory.id,
+					directory.directoryName,
+					favorite.id.isNotNull()
+				)
+			)
+			.from(directory)
+			.leftJoin(favorite)
+			.on(favorite.itemId.eq(directory.id)
+				.and(favorite.itemType.eq(ItemType.DIRECTORY))
+				.and(favorite.member.id.eq(memberId)))
+			.where(
+				directory.pageId.eq(pageId),
+				directory.directoryName.containsIgnoreCase(keyword)
+			)
+			.orderBy(directory.directoryName.asc())
+			.fetch();
+	}
+
 }

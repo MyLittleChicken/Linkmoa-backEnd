@@ -46,12 +46,17 @@ public class Site extends BaseEntity {
 	@Column(name = "favicon_url")
 	private String faviconUrl;
 
+	@Column(name = "page_id")
+	private Long pageId;
+
 	@Builder
-	public Site(String siteName, String siteUrl, Directory directory, Integer orderIndex, String faviconUrl) {
+	public Site(String siteName, String siteUrl, Directory directory, Integer orderIndex, String faviconUrl,
+		Long pageId) {
 		this.siteName = siteName;
 		this.siteUrl = siteUrl;
 		this.orderIndex = orderIndex;
 		this.faviconUrl = faviconUrl;
+		this.pageId = pageId;
 		setDirectory(directory);
 
 	}

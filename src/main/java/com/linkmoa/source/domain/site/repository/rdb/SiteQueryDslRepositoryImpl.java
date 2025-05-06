@@ -73,4 +73,32 @@ public class SiteQueryDslRepositoryImpl {
 			.orderBy(favorite.createdAt.asc())
 			.fetch();
 	}
+
+	public List<SiteSimpleResponse> findSitesByKeywordAndPageId(
+		final String keyword,
+		final Long pageId,
+		final Long memberId) {
+		return jpaQueryFactory
+			.select(
+				Projections.constructor(
+					SiteSimpleResponse.class,
+					site.id,
+					site.siteName,
+					site.siteUrl,
+					favorite.id.isNotNull(),
+					site.faviconUrl
+				)
+			)
+			.from(site)
+			.leftJoin(favorite)
+			.on(favorite.itemId.eq(site.id)
+				.and(favorite.itemType.eq(ItemType.SITE))
+				.and(favorite.member.id.eq(memberId)))
+			.where(
+				site.pageId.eq(pageId),
+				site.siteName.containsIgnoreCase(keyword)
+			)
+			.orderBy(site.siteName.asc())
+			.fetch();
+	}
 }

@@ -65,11 +65,15 @@ public class Directory extends BaseEntity {
 	@Column(name = "order_index")
 	private Integer orderIndex;
 
+	@Column(name = "page_id")
+	private Long pageId;
+
 	@Builder
-	public Directory(String directoryName, String directoryDescription, Integer orderIndex) {
+	public Directory(String directoryName, String directoryDescription, Integer orderIndex, Long pageId) {
 		this.directoryName = directoryName;
 		this.directoryDescription = directoryDescription;
 		this.orderIndex = orderIndex;
+		this.pageId = pageId;
 	}
 
 	public void setParentDirectory(Directory parentDirectory) {

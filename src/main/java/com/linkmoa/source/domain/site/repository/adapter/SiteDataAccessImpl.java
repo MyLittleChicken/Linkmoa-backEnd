@@ -46,4 +46,12 @@ public class SiteDataAccessImpl implements SiteDataAccess {
 	public List<SiteSimpleResponse> findFavoriteSites(List<Long> favoriteSitesIds) {
 		return siteQueryDslRepository.findFavoriteSites(favoriteSitesIds);
 	}
+
+	@Override
+	public List<SiteSimpleResponse> findSitesByKeywordAndPageId(
+		final String keyword,
+		final Long pageId,
+		final Long memberId) {
+		return siteQueryDslRepository.findSitesByKeywordAndPageId(keyword, pageId, memberId);
+	}
 }
