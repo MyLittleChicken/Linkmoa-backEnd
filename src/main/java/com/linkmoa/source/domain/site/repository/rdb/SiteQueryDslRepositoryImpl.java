@@ -98,6 +98,7 @@ public class SiteQueryDslRepositoryImpl {
 				site.pageId.eq(pageId),
 				site.siteName.containsIgnoreCase(keyword)
 			)
+			.orderBy(site.siteName.asc())
 			.fetch();
 	}
 }
