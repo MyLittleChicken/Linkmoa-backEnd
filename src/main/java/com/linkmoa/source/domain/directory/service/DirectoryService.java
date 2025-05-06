@@ -63,6 +63,7 @@ public class DirectoryService {
 			.directoryName(request.directoryName())
 			.directoryDescription(request.directoryDescription())
 			.orderIndex(nextOrderIndex)
+			.pageId(request.baseRequest().pageId())
 			.build();
 
 		// 부모 디렉토리에 새 디렉토리 추가
