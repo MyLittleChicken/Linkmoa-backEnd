@@ -9,7 +9,6 @@ import com.linkmoa.source.domain.directory.dto.response.DirectorySimpleResponse;
 import com.linkmoa.source.domain.directory.entity.Directory;
 
 public interface DirectoryDataAccess {
-	// ⭐ 추가해야 하는 기본 CRUD 메서드
 	Directory save(Directory directory);
 
 	Optional<Directory> findById(Long id);
