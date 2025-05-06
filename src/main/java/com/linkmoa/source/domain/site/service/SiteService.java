@@ -52,7 +52,7 @@ public class SiteService {
 
 	}
 
-	private static String extractFaviconUrl(String siteUrl) throws MalformedURLException {
+	private static String extractFaviconUrl(String siteUrl) {
 		try {
 			URL url = new URL(siteUrl);
 			return url.getProtocol() + "://" + url.getHost() + "/favicon.ico";
