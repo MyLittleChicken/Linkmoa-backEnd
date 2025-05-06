@@ -43,7 +43,7 @@ public class Site extends BaseEntity {
 	@Column(name = "order_index")
 	private Integer orderIndex;
 
-	@Column(name = "favicon url")
+	@Column(name = "favicon_url")
 	private String faviconUrl;
 
 	@Builder
