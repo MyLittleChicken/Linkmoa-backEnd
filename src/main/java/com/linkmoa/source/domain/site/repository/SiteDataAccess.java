@@ -18,4 +18,9 @@ public interface SiteDataAccess {
 	List<SiteDetailResponse> findSitesDetails(Long directoryId, List<Long> favoriteSiteIds, SortType sortType);
 
 	List<SiteSimpleResponse> findFavoriteSites(List<Long> favoriteSitesIds);
+
+	List<SiteSimpleResponse> findSitesByKeywordAndPageId(
+		final String keyword,
+		final Long pageId,
+		final Long memberId);
 }
