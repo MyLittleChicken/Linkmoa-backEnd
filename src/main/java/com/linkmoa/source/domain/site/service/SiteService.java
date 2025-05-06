@@ -1,5 +1,8 @@
 package com.linkmoa.source.domain.site.service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +50,15 @@ public class SiteService {
 		siteDataAccess.save(newSite);
 		return newSite.getId();
 
+	}
+
+	private String extractFaviconUrl(String siteUrl) throws MalformedURLException {
+		try {
+			URL url = new URL(siteUrl);
+			return url.getProtocol() + "://" + url.getHost() + "/favicon.ico";
+		} catch (MalformedURLException e) {
+			throw new SiteException(SiteErrorCode.INVALID_URL);
+		}
 	}
 
 	@ValidationApplied
