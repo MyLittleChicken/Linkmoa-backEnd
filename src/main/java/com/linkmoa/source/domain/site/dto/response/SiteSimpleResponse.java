@@ -12,5 +12,6 @@ public class SiteSimpleResponse {
 	private String siteName;
 	private String siteUrl;
 	private Boolean isFavorite;
+	private String faviconUrl;
 
 }

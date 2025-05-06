@@ -29,7 +29,8 @@ public class SiteService {
 	private final DirectoryDataAccess directoryDataAccess;
 
 	@ValidationApplied
-	public Long createSite(SiteCreateDto.Request request,
+	public Long createSite(
+		SiteCreateDto.Request request,
 		PrincipalDetails principalDetails) {
 
 		Directory directory = directoryDataAccess.findById(request.directoryId())
@@ -42,6 +43,7 @@ public class SiteService {
 			.siteUrl(request.siteUrl())
 			.directory(directory)
 			.orderIndex(nextOrderIndex)
+			.faviconUrl(request.faviconUrl())
 			.build();
 
 		siteDataAccess.save(newSite);

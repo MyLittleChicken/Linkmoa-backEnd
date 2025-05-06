@@ -11,7 +11,8 @@ public class SiteCreateDto {
 		BaseRequest baseRequest,
 		@NotBlank @Size(max = 30) String siteName,
 		@NotBlank String siteUrl,
-		Long directoryId
+		Long directoryId,
+		String faviconUrl
 	) {
 
 	}
