@@ -109,7 +109,7 @@ public class DirectoryDataAccessImpl implements DirectoryDataAccess {
 		final String keyword,
 		final Long pageId,
 		final Long memberId) {
-		return null;
+		return directoryQueryDslRepository.findDirectoriesByKeywordAndPageId(keyword, pageId, memberId);
 	}
 
 }
