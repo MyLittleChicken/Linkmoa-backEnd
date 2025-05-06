@@ -1,8 +1,5 @@
 package com.linkmoa.source.domain.site.service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +29,8 @@ public class SiteService {
 	private final DirectoryDataAccess directoryDataAccess;
 
 	@ValidationApplied
-	public Long createSite(SiteCreateDto.Request request,
+	public Long createSite(
+		SiteCreateDto.Request request,
 		PrincipalDetails principalDetails) {
 
 		Directory directory = directoryDataAccess.findById(request.directoryId())
@@ -45,21 +43,12 @@ public class SiteService {
 			.siteUrl(request.siteUrl())
 			.directory(directory)
 			.orderIndex(nextOrderIndex)
-			.faviconUrl(extractFaviconUrl(request.siteUrl()))
+			.faviconUrl(request.faviconUrl())
 			.build();
 
 		siteDataAccess.save(newSite);
 		return newSite.getId();
 
-	}
-
-	private static String extractFaviconUrl(String siteUrl) {
-		try {
-			URL url = new URL(siteUrl);
-			return url.getProtocol() + "://" + url.getHost() + "/favicon.ico";
-		} catch (MalformedURLException e) {
-			throw new SiteException(SiteErrorCode.INVALID_URL);
-		}
 	}
 
 	@ValidationApplied
