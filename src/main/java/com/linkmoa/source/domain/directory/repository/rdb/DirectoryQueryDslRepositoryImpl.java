@@ -164,6 +164,7 @@ public class DirectoryQueryDslRepositoryImpl {
 				directory.pageId.eq(pageId),
 				directory.directoryName.containsIgnoreCase(keyword)
 			)
+			.orderBy(directory.directoryName.asc())
 			.fetch();
 	}
 
